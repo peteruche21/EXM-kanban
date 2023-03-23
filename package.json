@@ -5,8 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "vite:build": "tsc && vite build",
+    "preview": "vite preview",
+    "format": "make format",
+    "forge:clean": "make clean",
+    "forge:install": "make install",
+    "forge:build": "make build",
+    "forge:deploy": "make deploy-base-goerli contract=PassNFT",
+    "forge:test": "make test",
+    "forge:verify": "make verify"
   },
   "dependencies": {
     "daisyui": "^2.51.5",
