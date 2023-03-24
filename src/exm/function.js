@@ -1,14 +1,19 @@
 // initial state:
 // {
+//     projects: [],
 //     tasks: [],
 //     archive: []
 // }
+
+// project
+// {name: string, owner: `0x${string}`, open: boolean}
 
 // action.input :
 // {
 //     fn: "TODO" || "DOING" || "DONE" || "ARCHIVE" || "UPDATE" || "REMOVE" || "COMMENT" || default == "CREATE",
 //     index: number,
 //     data: {
+//          projectId: number
 //          status: "TODO" || "DOING" || "DONE",
 //          title: string,
 //          description: string,
@@ -17,7 +22,12 @@
 //          PR?: string, // link to github PR that closes it
 //          priority?: "LOW" || "MEDIUM" || "HIGH",
 //          comments?: string[],
+
+//          # untracked data
 //          comment?: string // if present, pushes to state
+//          name?: project name
+//          owner?: project owner
+//          open?: project status
 //      }
 // }
 
@@ -29,6 +39,12 @@ export const handle = async (state, action) => {
   let ok = true;
 
   switch (fn) {
+    case "CREATE_PROJECT":
+      state.projects.push(data);
+      break;
+    case "TOGGLE_PROJECT":
+      state.projects[id].open = !state.projects[id].open;
+      break;
     case "TODO":
       state.tasks[id].status = "TODO";
       break;
@@ -52,11 +68,21 @@ export const handle = async (state, action) => {
       state.tasks[id].comments.push(data.comment);
       break;
     default:
-      validData(data) ? state.tasks.push(data) : (ok = false);
+      validId(data.projectId, state.projects.length) && validData(data)
+        ? state.tasks.push(data)
+        : (ok = false);
       break;
   }
 
   return { ok };
+};
+
+const validId = (id, len) => {
+  const id = int(Math.abs(id));
+  if (id > len - 1) {
+    return false;
+  }
+  return true;
 };
 
 const validData = (data) => {

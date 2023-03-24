@@ -5,6 +5,7 @@ import { z } from "zod";
 const walletAddr = z.string().startsWith("0x").length(42);
 
 export interface ITask {
+  projectId: number;
   status?: "TODO" | "DOING" | "DONE";
   title?: string;
   description?: string;
@@ -13,6 +14,12 @@ export interface ITask {
   PR?: string;
   priority?: "LOW" | "MEDIUM" | "HIGH";
   comments?: string[];
+}
+
+export interface IProject {
+  name: string;
+  owner: z.infer<typeof walletAddr>;
+  open: boolean;
 }
 
 export interface IInput {
@@ -24,7 +31,9 @@ export interface IInput {
     | "UPDATE"
     | "REMOVE"
     | "COMMENT"
-    | "CREATE";
+    | "CREATE"
+    | "CREATE_PROJECT"
+    | "TOGGLE_PROJECT";
   index?: number;
   data?: ITask;
 }
@@ -84,9 +93,22 @@ export class EXMStore {
   async get() {
     await this.exm.functions.read(pass.exmFnId);
   }
+
+  async newProject(data: IProject) {
+    return await this.exm.functions.write<IProject>(pass.exmFnId, {
+      fn: "CREATE_PROJECT",
+      data,
+    });
+  }
+
+  async toggleProject(index: number) {
+    return await this.exm.functions.write<IProject>(pass.exmFnId, {
+      fn: "TOGGLE_PROJECT",
+      index,
+    });
+  }
 }
 
 const sdk = EXMStore.getOrCreateEXMStore();
-
 export type SDK = typeof sdk;
 export default sdk;
