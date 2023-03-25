@@ -7,11 +7,11 @@ export const notify = (
   calllback: string
 ) => {
   const [notifications, customNotification, updateNotify] = useNotifications();
-  const { update, dismiss } = customNotification({
+  const { update } = customNotification({
     eventCode: "dbUpdate",
     type,
     message,
-    
+    autoDismiss: 5000,
     onClick: () => window.open(calllback),
   });
   // Update your notification example below
@@ -25,11 +25,5 @@ export const notify = (
   //     }),
   //   4000
   // )
-  setTimeout(
-    () =>
-      // use the dismiss method returned or add an autoDismiss prop to the notification
-      dismiss(),
-    4000
-  );
 };
   

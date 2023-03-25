@@ -1,14 +1,13 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
+import { useConnectWallet } from "@web3-onboard/react";
+
 function App() {
-  const [count, setCount] = useState(0);
+  const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
 
   return (
     <div className="App">
-      <div className="w-12 h-12 bg-red-500">hello from tailwindcss</div>
+      <>hello from app:inner</>
     </div>
   );
 }

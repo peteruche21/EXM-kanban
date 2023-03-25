@@ -71,7 +71,7 @@ export const web3Onboard = init({
     desktop: {
       position: "topRight",
       enabled: true,
-      minimal: false,
+      minimal: true,
     },
     mobile: {
       position: "topRight",
@@ -79,5 +79,5 @@ export const web3Onboard = init({
       minimal: true,
     },
   },
-  apiKey: pass.dappId,
+  theme: "dark",
 });

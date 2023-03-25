@@ -3,13 +3,13 @@ export const chains = [
     id: "0x1",
     token: "ETH",
     label: "Mainnnet",
-    rpcUrl: import.meta.env.RPC_URL,
+    rpcUrl: "https://rpc.ankr.com/eth",
   },
   {
     id: "0x5",
     token: "ETH",
     label: "Goerli",
-    rpcUrl: import.meta.env.GOERLI_RPC_URL,
+    rpcUrl: "https://rpc.ankr.com/eth_goerli",
   },
   {
     id: "0x13881",
