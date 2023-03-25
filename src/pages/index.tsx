@@ -1,7 +1,29 @@
-import React from "react";
-
-const Dashboard = () => {
-  return <div>Dashboard</div>;
+const Login = () => {
+  return (
+    <div className="flex h-[80vh] px-4">
+      <div className="card image-full m-auto w-[500px] bg-base-100 shadow-xl">
+        <figure>
+          <Image
+            src="https://www.murdoch.edu.au/sf-images/newsportallibrary/feature-images/note-taking-feature.jpg?sfvrsn=ff31cf5f_0"
+            alt="notes"
+            fill
+            className="rounded-2xl"
+          />
+        </figure>
+        <div className="card-body">
+          <h2 className="card-title">WeaveDB Notes App</h2>
+          <p>You have to sign in with your ethereum wallet to use this app!</p>
+          <div className="card-actions justify-end">
+            <LoginButton />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default Dashboard;
+export default Login;
+
+export const ErrorBoundary = () => {
+  return <h3>Some Error Occured</h3>;
+};

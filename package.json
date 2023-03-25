@@ -7,9 +7,7 @@
     "dev": "vite",
     "vite:build": "tsc && vite build",
     "preview": "vite preview",
-
     "format": "make format",
-    
     "forge:clean": "make clean",
     "forge:install": "make install",
     "forge:build": "make build",
@@ -55,6 +53,6 @@
     "typescript": "^4.9.3",
     "vite": "^4.2.0",
     "vite-plugin-node-stdlib-browser": "^0.2.1",
-    "vite-plugin-ssr": "^0.4.103"
+    "vite-plugin-svgr": "^2.4.0"
   }
 }
