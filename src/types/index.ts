@@ -45,8 +45,8 @@ export interface IPage {
 }
 
 export interface IDappState {
-  validity: boolean | null;
-  setValidity: (validity: boolean) => void;
+  valid: boolean | null;
+  setValid: (valid: boolean) => void;
 
   projects: IProject[];
   setProjects: (projects: IProject[]) => void;

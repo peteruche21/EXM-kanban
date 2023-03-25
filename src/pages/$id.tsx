@@ -7,7 +7,3 @@ const DynamicDashboard = () => {
   };
   
   export default DynamicDashboard;
-
-  export const ErrorBoundary = () => {
-    return <h3>Some Error Occured</h3>;
-  };

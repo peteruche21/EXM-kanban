@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { IDappState } from "../types";
 
 export const useDappStore = create<IDappState>()((set) => ({
-  validity: null,
-  setValidity: (validity) => set({ validity }),
+  valid: null,
+  setValid: (valid) => set({ valid }),
 
   projects: [],
   setProjects: (projects) => set({ projects }),

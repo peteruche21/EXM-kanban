@@ -8,11 +8,11 @@ const options = {
   },
 };
 
-export async function validate(address: string) {
+export async function validateWithWhal3s(address?: string) {
   return await axios
     .get(
       `https://app.whal3s.xyz/api/v0/nft-validation-utilities/${pass.nftValidationKey}/wallet/${address}`,
       options
     )
-    .then((response) => response.data.valid);
+    .then((response) => response.data);
 }

@@ -1,27 +1,60 @@
 import "./App.css";
 import { useConnectWallet } from "@web3-onboard/react";
 import { useEffect } from "react";
+import { useDappStore } from "./store";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { validateWithWhal3s } from "./utils/gate";
+import { RouteProvider } from "./providers/router";
 
 function App() {
   const [{ wallet }] = useConnectWallet();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isError, data, refetch, isSuccess } = useQuery({
+    queryKey: ["pass-gate"],
+    queryFn: async () => await validateWithWhal3s(wallet?.accounts[0].address),
+    retry: 5,
+    enabled: false,
+  });
+  const [valid, setValid] = useDappStore((state) => [
+    state.valid,
+    state.setValid,
+  ]);
 
-    // validate in app.tsx
-    // routing and re-routing in app.tsx
+  const reRoute = (to: string) => {
+    if (location.pathname !== to) {
+      console.log(location.pathname, to);
+      navigate(to);
+    }
+  };
 
-    //
-    const validate = async(address: string) => {
-      // check if the wallet validation is in zustand
-
-      // if its in zustand, dont make an api call
-
-      // if it is not call, validate and save in zustand
-  }
+  const validate = async () => {
+    switch (valid) {
+      case true:
+        if (wallet) {
+          reRoute("/projects");
+          break;
+        }
+      default:
+        if (wallet) {
+          (!isSuccess || isError) && (await refetch());
+          if (isSuccess) {
+            setValid(data?.valid);
+            data?.valid && reRoute("/projects");
+          }
+          break;
+        }
+        reRoute("/login");
+        break;
+    }
+  };
 
   useEffect(() => {
-    // check if is connected
+    validate();
+  }, [wallet, isSuccess, isError, location]);
 
-    // call validate
-  }, [])
+  return <RouteProvider />;
 }
 
 export default App;

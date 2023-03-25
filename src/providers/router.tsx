@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { IPage } from "../types";
 
 const pages = import.meta.glob("../pages/*.tsx", { eager: true });
@@ -12,20 +12,15 @@ const routes = Object.keys(pages).map((path) => {
     name,
     path: name === "index" ? "/" : `/${normalizeName?.toLowerCase()}`,
     component: safePage.default,
-    loader: safePage.loader,
-    action: safePage.action,
-    ErrorBoundary: safePage.ErrorBoundary,
   };
 });
 
-const router = createBrowserRouter(
-  routes.map(({ component: RouteComp, ErrorBoundary, ...rest }) => ({
-    ...rest,
-    element: <RouteComp />,
-    ...(ErrorBoundary && { errorElement: <ErrorBoundary /> }),
-  }))
-);
-
 export const RouteProvider = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <Routes>
+      {routes.map(({ path, component: RouteComp }) => {
+        return <Route key={path} path={path} element={<RouteComp />}></Route>;
+      })}
+    </Routes>
+  );
 };
