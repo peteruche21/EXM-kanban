@@ -1,16 +1,5 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-  LoaderFunction,
-  ActionFunction,
-} from "react-router-dom";
-
-interface IPage {
-  default: any;
-  loader?: LoaderFunction;
-  action?: ActionFunction;
-  ErrorBoundary?: any;
-}
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { IPage } from "../types";
 
 const pages = import.meta.glob("../pages/*.tsx", { eager: true });
 

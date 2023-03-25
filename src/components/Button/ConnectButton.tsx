@@ -1,9 +1,31 @@
-import React from 'react'
+import { ReactComponent as ETHLogo } from "../../assets/vector/ethereum-eth-logo.svg";
+import { useConnectWallet } from "@web3-onboard/react";
 
 const ConnectButton = () => {
-  return (
-    <div>ConnectButton</div>
-  )
-}
+  const [{ connecting, wallet }, connect] = useConnectWallet();
 
-export default ConnectButton
+  const login = async () => {
+    await connect();
+  };
+
+  return (
+    <div>
+      {connecting ? (
+        <button className="btn btn-square loading" />
+      ) : (
+        <button
+          className="btn btn-wide"
+          onClick={login}
+          disabled={wallet ? true : false}
+        >
+          <span>
+            <ETHLogo className="btn-xs" />
+          </span>{" "}
+          {wallet ? "Connected" : "Connect Wallet"}
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default ConnectButton;
