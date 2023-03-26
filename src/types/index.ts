@@ -68,3 +68,9 @@ export interface IActionButton {
   type: "button" | "submit" | "reset" | undefined;
   callback?: () => void;
 }
+
+export interface ITaskCardProps {
+  data: ITask;
+  id: number | string;
+  callback?: () => void;
+}

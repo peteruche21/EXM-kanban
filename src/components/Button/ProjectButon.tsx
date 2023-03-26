@@ -10,7 +10,7 @@ const ProjectButton = ({
   open: boolean;
 }) => {
   return (
-    <div>
+    <div className="break-inside-avoid max-w-sm mb-8">
       <Link
         to={`/${id}`}
         className={`btn btn-block capitalize justify-start shadow-lg ${

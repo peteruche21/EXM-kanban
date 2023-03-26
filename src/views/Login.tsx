@@ -12,7 +12,6 @@ const Login = () => {
           Welcome friend.
         </h1>
         <h1 className="text-4xl font-semibold">We're happy you're here.</h1>
-        {/* if connected and not valid display a nice message */}
         {wallet ? (
           valid ? (
             <h2 className="uppercase font-medium text-sm my-3 text-gray-400">

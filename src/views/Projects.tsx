@@ -10,7 +10,7 @@ const Projects = () => {
     queryKey: ["projects"],
     queryFn: async () =>
       fetch(
-        "https://api-goerli.basescan.org/api?module=account&action=balance&address=0x33e0e07ca86c869ade3fc9de9126f6c73dad105e&apikey=YourApiKeyToken"
+        "https://api-goerli.basescan.org/api"
       ),
     retry: 5,
   });
@@ -22,9 +22,18 @@ const Projects = () => {
   const renderProjectsList = (): JSX.Element[] | undefined => {
     return [
       { name: "john is an open project", id: 0, open: true },
+      { name: "peter", id: 2, open: false },
       { name: "peter", id: 2, open: true },
+      { name: "peter", id: 2, open: true },
+      { name: "peter", id: 2, open: true },
+      { name: "peter", id: 2, open: false },
+      { name: "peter", id: 2, open: true },
+      { name: "peter", id: 2, open: true },
+      { name: "peter", id: 2, open: false },
+      { name: "peter", id: 2, open: true },
+      { name: "peter", id: 2, open: true }
     ].map((project, id) => {
-      return <ProjectButton name={project.name} id={id} open={project.open}/>;
+      return <ProjectButton name={project.name} id={id} open={project.open} />;
     });
   };
 
@@ -54,7 +63,7 @@ const Projects = () => {
         <ProjectForm />
       </div>
 
-      <div className="max-w-sm m-auto space-y-4 max-h-[48rem] overflow-x-scroll">
+      <div className="flex items-center flex-col max-h-[48rem] overflow-y-scroll">
         {isError ? (
           <Alert
             status="warning"
@@ -62,7 +71,9 @@ const Projects = () => {
           />
         ) : isSuccess ? (
           [""].length > 0 ? (
-            renderProjectsList()
+            <div className="columns-1 gap-8 lg:columns-2 w-[48rem]">
+              {renderProjectsList()}
+            </div>
           ) : (
             <Empty message="No Project Found" />
           )
