@@ -1,9 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
-import { useConnectWallet, useWallets } from "@web3-onboard/react";
-import { useForm } from "react-hook-form";
+import { useConnectWallet } from "@web3-onboard/react";
+import { Controller, useForm } from "react-hook-form";
 import { IProject, ITask, ITaskFormProps } from "../../types";
 import ActionButton from "../Button/ActionButton";
 import Loading from "../Flow/Loading";
+import { useState } from "react";
+//@ts-ignore
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ProjectForm = () => {
   const [{ wallet }] = useConnectWallet();
@@ -63,9 +67,13 @@ const ProjectForm = () => {
 };
 
 const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
+  const [startDate, setStartDate] = useState();
+  const [stopDate, setStopDate] = useState();
+
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors },
   } = useForm<ITask>();
@@ -83,6 +91,13 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
   });
 
   const onSubmit = async (data: ITask) => {
+    if (startDate && stopDate) {
+      data = {
+        ...data,
+        duration: [startDate, stopDate!],
+      };
+    }
+
     const result =
       type === "new"
         ? await createMutation.mutateAsync(data)
@@ -98,32 +113,91 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md space-y-5">
       <div>
-        {errors.title && (
-          <p className="py-2 text-red-600">This field is required</p>
-        )}
+        {/* title */}
         <input
           type="text"
           id="title"
-          placeholder="note title"
-          className="input-bordered input w-full max-w-md"
+          placeholder="title"
+          className={`input input-bordered w-full max-w-md ${
+            errors.title && "border-red-500"
+          }`}
           {...register("title", { required: true, value: data?.title })}
         />
       </div>
-      <div>
-        {errors.description && (
-          <p className="pb-2 text-red-600">This field is required</p>
-        )}
+      {/* description */}
+      <textarea
+        id="body"
+        placeholder="description"
+        className={`textarea-bordered textarea textarea-lg h-[400px] w-full max-w-md ${
+          errors.description && "border-red-500"
+        }`}
+        {...register("description", {
+          required: true,
+          value: data?.description,
+        })}
+      />
 
-        <textarea
-          id="body"
-          placeholder="write your thoughts here"
-          className="textarea-bordered textarea textarea-lg h-[400px] w-full max-w-md"
-          {...register("description", {
-            required: true,
-            value: data?.description,
-          })}
+      {/* date */}
+      <div className="inline-flex">
+        <span>from </span>
+        <div className="border border-gray-500 rounded-lg">
+          <DatePicker
+            selected={startDate}
+            onChange={(date: any) => setStartDate(date)}
+          />
+        </div>
+
+        <span>to </span>
+        <div className="border border-gray-500 rounded-lg">
+          <DatePicker
+            selected={stopDate}
+            onChange={(date: any) => setStopDate(date)}
+          />
+        </div>
+      </div>
+
+      <div className="inline-flex">
+        {/* priority */}
+        <Controller
+          control={control}
+          name="priority"
+          defaultValue="LOW"
+          render={({
+            field: { onChange, onBlur, value, name, ref },
+            fieldState: { isTouched, isDirty, error },
+            formState,
+          }) => (
+            <select
+              className="select select-ghost"
+              onChange={(val) => onChange(val.target.value)}
+            >
+              <option defaultValue="LOW" value="LOW">
+                LOW
+              </option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+            </select>
+          )}
+        />
+
+        {/* PR */}
+        <input
+          type="text"
+          id="PR"
+          placeholder="PR"
+          className="input input-bordered w-full max-w-md"
+          {...register("PR", { value: data?.PR })}
         />
       </div>
+
+      {/* assignee */}
+      <input
+        type="text"
+        id="assignee"
+        placeholder="assign"
+        className="input input-bordered w-full max-w-md"
+        {...register("assignee", { value: data?.assignee })}
+      />
 
       {createMutation.isLoading || updateMutation.isLoading ? (
         <button className="loading btn-primary btn-block btn"></button>

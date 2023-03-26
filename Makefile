@@ -32,6 +32,18 @@ deploy-mumbai :;  @forge script script/${contract}.s.sol:Deploy${contract} --rpc
 
 deploy-anvil :; @forge script script/${contract}.s.sol:Deploy${contract} --rpc-url http://localhost:8545  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast  	
 
+deploy-gnosis :; @forge script script/${contract}.s.sol:Deploy${contract} --rpc-url ${GNOSIS_RPC_URL}  --private-key ${PRIVATE_KEY} --broadcast --verify --etherscan-api-key ${ETHERSCAN_API_KEY}  -vvvv
+
+deploy-taiko :; @forge script script/${contract}.s.sol:Deploy${contract} --rpc-url ${TAIKO_RPC_URL}  --private-key ${PRIVATE_KEY} --broadcast   -vvvv
+
+deploy-mantle :; @forge script script/${contract}.s.sol:Deploy${contract} --rpc-url ${MANTLE_RPC_URL}  --private-key ${PRIVATE_KEY} --broadcast   -vvvv
+
+deploy-scroll :; @forge script script/${contract}.s.sol:Deploy${contract} --rpc-url ${SCROLL_RPC_URL}  --private-key ${PRIVATE_KEY} --broadcast   -vvvv
+
+deploy-op :; @forge script script/${contract}.s.sol:Deploy${contract} --rpc-url ${OP_RPC_URL}  --private-key ${PRIVATE_KEY} --broadcast   -vvvv
+
+deploy-op-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --rpc-url ${OPTESTNET_RPC_URL}  --private-key ${PRIVATE_KEY} --broadcast  -vvvv
+
 deploy :; make deploy-${chain}
 
 verify :; make verify-${chain}

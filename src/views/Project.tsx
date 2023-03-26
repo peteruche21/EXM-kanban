@@ -7,7 +7,9 @@ import Empty from "../components/Flow/Empty";
 import Loading from "../components/Flow/Loading";
 import { TaskForm } from "../components/Form/Forms";
 import Modal from "../components/Modal";
-import { ITask } from "../types";
+import { IInput, ITask } from "../types";
+//@ts-ignore
+import { Draggable, Droppable } from "react-drag-and-drop";
 
 const Project = ({ id }: { id: number }) => {
   const { isLoading, isFetched, isError, data, refetch, isSuccess } = useQuery({
@@ -16,8 +18,8 @@ const Project = ({ id }: { id: number }) => {
     retry: 5,
   });
 
-  const mutation = useMutation({
-    mutationFn: (task: ITask) => {
+  const dragMutation = useMutation({
+    mutationFn: (input: IInput) => {
       return fetch("https://api-goerli.basescan.org");
     },
   });
@@ -89,22 +91,36 @@ const Project = ({ id }: { id: number }) => {
 
   const renderToDoTasks = (): JSX.Element[] | undefined => {
     return filterTasks("TODO")?.map((task, index) => {
-      return <TaskCard data={task} id={index} callback={refresh} />;
+      return (
+        <Draggable type="dnd" data={(task as any).id} key={index}>
+          <TaskCard data={task} id={index} callback={refresh} />
+        </Draggable>
+      );
     });
   };
 
   const renderDoingTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DOING")?.map((task, index) => {
-      return <TaskCard data={task} id={index} callback={refresh} />;
+      return (
+        <Draggable type="dnd" data={(task as any).id} key={index}>
+          <TaskCard data={task} id={index} callback={refresh} />
+        </Draggable>
+      );
     });
   };
 
   const renderDoneTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DONE")?.map((task, index) => {
-      return <TaskCard data={task} id={index} callback={refresh} />;
+      return (
+        <Draggable type="dnd" data={(task as any).id} key={index}>
+          <TaskCard data={task} id={index} callback={refresh} />
+        </Draggable>
+      );
     });
   };
-
+  const handleDrop = (data: any, event: any) => {
+    console.log(data, event);
+  };
   return (
     <div className="w-full h-full mb-auto py-20 px-8 relative">
       <div className="flex justify-between mb-10 gap-10">
@@ -160,18 +176,26 @@ const Project = ({ id }: { id: number }) => {
             <div className="max-w-screen-xl mx-auto">
               <div className="max-w-none overflow-x-auto">
                 <div className="grid grid-cols-3 gap-4 w-max">
-                  <div className=" p-4 rounded-lg w-80 md:w-96">
-                    <h2 className="text-xl font-semibold mb-4">To Do</h2>
-                    {renderToDoTasks()}
-                  </div>
-                  <div className=" p-4 rounded-lg w-80 md:w-96">
-                    <h2 className="text-xl font-semibold mb-4">Doing</h2>
-                    {renderDoingTasks()}
-                  </div>
-                  <div className=" p-4 rounded-lg w-80 md:w-96">
-                    <h2 className="text-xl font-semibold mb-4">Done</h2>
-                    {renderDoneTasks()}
-                  </div>
+                  <Droppable types={["dnd"]} onDrop={handleDrop}>
+                    <div className=" p-4 rounded-lg w-80 md:w-96">
+                      <h2 className="text-xl font-semibold mb-4">To Do</h2>
+                      {renderToDoTasks()}
+                    </div>
+                  </Droppable>
+
+                  <Droppable types={["dnd"]} onDrop={handleDrop}>
+                    <div className=" p-4 rounded-lg w-80 md:w-96">
+                      <h2 className="text-xl font-semibold mb-4">Doing</h2>
+                      {renderDoingTasks()}
+                    </div>
+                  </Droppable>
+
+                  <Droppable types={["dnd"]} onDrop={handleDrop}>
+                    <div className=" p-4 rounded-lg w-80 md:w-96">
+                      <h2 className="text-xl font-semibold mb-4">Done</h2>
+                      {renderDoneTasks()}
+                    </div>
+                  </Droppable>
                 </div>
               </div>
             </div>

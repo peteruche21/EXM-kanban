@@ -53,13 +53,36 @@ export const chains = [
     label: "Base Goerli",
     rpcUrl: "https://goerli.base.org",
   },
+  {
+    id: 167004,
+    token: "ETH",
+    label: "Taiko",
+    rpcUrl: "https://rpc.a2.taiko.xyz",
+  },
+  {
+    id: 534353,
+    token: "ETH",
+    label: "Scroll",
+    rpcUrl: "https://alpha-rpc.scroll.io/l2",
+  },
+  {
+    id: 100,
+    token: "xDai",
+    label: "Gnosis",
+    rpcUrl: "https://rpc.chiadochain.net",
+  },
+  {
+    id: 5001,
+    token: "BIT",
+    label: "Mantle",
+    rpcUrl: "https://rpc.testnet.mantle.xyz/",
+  },
 ];
 
-
 export const networkEnum = Object.freeze({
-  '0x1': 'Ethereum Main',
-  '0x38': 'BSC',
-  '0x89': 'Polygon',
-  '0xfa': 'Fantom',
-  localhost: 'localhost'
+  "0x1": "Ethereum Main",
+  "0x38": "BSC",
+  "0x89": "Polygon",
+  "0xfa": "Fantom",
+  localhost: "localhost",
 });
