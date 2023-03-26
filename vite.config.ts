@@ -7,7 +7,7 @@ import svgr from 'vite-plugin-svgr'
 export default defineConfig({
   plugins: [react(), nodePolyfills(), svgr()],
   optimizeDeps: {
-    exclude: ["@ethersproject/hash", "wrtc"],
+    exclude: ["@ethersproject/hash", "wrtc", "three-em-0-3-21"],
     include: ["js-sha3", "@ethersproject/bignumber"],
   },
 });

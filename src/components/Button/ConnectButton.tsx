@@ -14,7 +14,7 @@ const ConnectButton = () => {
         <button className="btn btn-square loading" />
       ) : (
         <button
-          className="btn btn-wide"
+          className="btn btn-wide glass"
           onClick={login}
           disabled={wallet ? true : false}
         >

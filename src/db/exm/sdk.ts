@@ -1,6 +1,6 @@
-import { Exm } from "@execution-machine/sdk";
-import { pass } from "../constants";
-import { IInput, IProject, ITask } from "../types";
+import { Exm, ReadResult } from "@execution-machine/sdk";
+import { pass } from "../../constants";
+import { IDBResponse, IInput, IProject, ITask } from "../../types";
 
 export class EXMStore {
   private static instance: EXMStore;
@@ -54,8 +54,8 @@ export class EXMStore {
     });
   }
 
-  async get() {
-    await this.exm.functions.read(pass.exmFnId);
+  async get(): Promise<ReadResult<IDBResponse>> {
+    return await this.exm.functions.read<IDBResponse>(pass.exmFnId);
   }
 
   async newProject(data: IProject) {

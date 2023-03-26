@@ -7,7 +7,24 @@ export const useDappStore = create<IDappState>()((set) => ({
 
   projects: [],
   setProjects: (projects) => set({ projects }),
+  addProject: (project) =>
+    set((state) => ({
+      projects: {
+        ...state.projects,
+        project,
+      },
+    })),
 
   tasks: [],
   setTasks: (tasks) => set({ tasks }),
+  addTask: (key, task) =>
+    set((state) => ({
+      tasks: {
+        ...state.tasks,
+        [key]: {
+          ...state.tasks[key],
+          task,
+        },
+      },
+    })),
 }));

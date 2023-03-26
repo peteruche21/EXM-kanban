@@ -1,7 +1,7 @@
-import React from "react";
+import Projects from "../views/Projects";
 
-const About = () => {
-  return <div>About</div>;
+const ProjectsPage = () => {
+  return <Projects />;
 };
 
-export default About;
+export default ProjectsPage;

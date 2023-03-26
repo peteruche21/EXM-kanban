@@ -21,6 +21,12 @@ export interface IProject {
   open: boolean;
 }
 
+export interface IDBResponse {
+  projects: IProject[];
+  tasks: ITask[];
+  archive: ITask[];
+}
+
 export interface IInput {
   fn:
     | "TODO"
@@ -50,7 +56,15 @@ export interface IDappState {
 
   projects: IProject[];
   setProjects: (projects: IProject[]) => void;
+  addProject: (project: IProject) => void;
 
   tasks: { [key: number]: ITask[] };
   setTasks: (tasks: { [key: number]: ITask[] }) => void;
+  addTask: (key: number, task: ITask) => void;
+}
+
+export interface IActionButton {
+  text: string;
+  type: "button" | "submit" | "reset" | undefined;
+  callback?: () => void;
 }

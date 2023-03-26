@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
+import Project from "../views/Project";
 
-const DynamicDashboard = () => {
-    const { id } = useParams();
-  
-    return <div>Dynamic Dashboard Page, Param: {id}</div>;
-  };
-  
-  export default DynamicDashboard;
+const ProjectPage = () => {
+  const { id } = useParams();
+  return <Project id={parseInt(id as string)} />;
+};
+
+export default ProjectPage;

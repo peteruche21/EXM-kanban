@@ -23,9 +23,13 @@ function App() {
   ]);
 
   const reRoute = (to: string) => {
-    if (location.pathname !== to) {
-      console.log(location.pathname, to);
-      navigate(to);
+    switch (to) {
+      case "/projects":
+        if (location.pathname === "/login") navigate(to);
+        break;
+      default:
+        if (location.pathname !== to) navigate(to);
+        break;
     }
   };
 
