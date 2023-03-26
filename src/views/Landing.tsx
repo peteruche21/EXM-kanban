@@ -12,11 +12,11 @@ const Landing = () => {
               "Fast",
               2500,
               "Chain Agnostic",
-              2500,
+              3500,
               "Lightweight",
-              2600,
+              3500,
               "Self Hosted",
-              2500,
+              3500,
             ]}
             wrapper="p"
             loop={Infinity}

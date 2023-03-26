@@ -8,10 +8,7 @@ import { ProjectForm } from "../components/Form/Forms";
 const Projects = () => {
   const { isLoading, isFetched, isError, data, refetch, isSuccess } = useQuery({
     queryKey: ["projects"],
-    queryFn: async () =>
-      fetch(
-        "https://api-goerli.basescan.org/api"
-      ),
+    queryFn: async () => fetch("https://api-goerli.basescan.org/api"),
     retry: 5,
   });
 
@@ -31,7 +28,7 @@ const Projects = () => {
       { name: "peter", id: 2, open: true },
       { name: "peter", id: 2, open: false },
       { name: "peter", id: 2, open: true },
-      { name: "peter", id: 2, open: true }
+      { name: "peter", id: 2, open: true },
     ].map((project, id) => {
       return <ProjectButton name={project.name} id={id} open={project.open} />;
     });
@@ -63,7 +60,7 @@ const Projects = () => {
         <ProjectForm />
       </div>
 
-      <div className="flex items-center flex-col max-h-[48rem] overflow-y-scroll">
+      <div className="max-h-[48rem]">
         {isError ? (
           <Alert
             status="warning"
@@ -71,8 +68,10 @@ const Projects = () => {
           />
         ) : isSuccess ? (
           [""].length > 0 ? (
-            <div className="columns-1 gap-8 lg:columns-2 w-[48rem]">
-              {renderProjectsList()}
+            <div className="overflow-y-auto">
+              <div className="columns-1 gap-8 lg:columns-2 max-w-[48rem] mx-auto">
+                {renderProjectsList()}
+              </div>
             </div>
           ) : (
             <Empty message="No Project Found" />

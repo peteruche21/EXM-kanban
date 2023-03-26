@@ -72,5 +72,12 @@ export interface IActionButton {
 export interface ITaskCardProps {
   data: ITask;
   id: number | string;
-  callback?: () => void;
+  callback?: () => Promise<void>;
+}
+
+export interface ITaskFormProps {
+  data?: ITask;
+  type: "new" | "update";
+  id?: string | number;
+  onUpdate?: () => Promise<void>;
 }

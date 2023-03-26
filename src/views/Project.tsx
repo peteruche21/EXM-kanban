@@ -22,12 +22,18 @@ const Project = ({ id }: { id: number }) => {
     },
   });
 
+  const toggleMutation = useMutation({
+    mutationFn: () => {
+      return fetch("https://api-goerli.basescan.org");
+    },
+  });
+
   const refresh = async () => {
     await refetch();
   };
 
   const toggleProject = async () => {
-    await refetch();
+    await toggleMutation.mutateAsync();
   };
 
   const filterTasks = (status: string) => {
@@ -37,7 +43,7 @@ const Project = ({ id }: { id: number }) => {
         status: "TODO",
         title: "first task",
         description: "my first actual task",
-        duration: [new Date(), new Date()],
+        duration: [Date.now(), Date.now()],
         assignee: "oxstring",
         PR: "",
         priority: "LOW",
@@ -47,9 +53,19 @@ const Project = ({ id }: { id: number }) => {
         status: "DOING",
         title: "second task",
         description: "a god second task",
-        duration: [new Date(), new Date()],
+        duration: [Date.now(), Date.now()],
         assignee: "0xsting",
-        PR: "",
+        PR: "https://www.github.com",
+        priority: "HIGH",
+      },
+      {
+        projectId: id,
+        status: "DOING",
+        title: "second task",
+        description: "a god second task",
+        duration: [Date.now(), Date.now()],
+        assignee: "0xsting",
+        PR: "https://www.github.com",
         priority: "HIGH",
       },
       {
@@ -57,7 +73,7 @@ const Project = ({ id }: { id: number }) => {
         status: "DONE",
         title: "third post",
         description: "a good third description",
-        duration: [new Date(), new Date()],
+        duration: [Date.now(), Date.now()],
         assignee: "0xstring",
         PR: "",
         priority: "MEDIUM",
@@ -73,19 +89,19 @@ const Project = ({ id }: { id: number }) => {
 
   const renderToDoTasks = (): JSX.Element[] | undefined => {
     return filterTasks("TODO")?.map((task, index) => {
-      return <TaskCard data={task} id={index} />;
+      return <TaskCard data={task} id={index} callback={refresh} />;
     });
   };
 
   const renderDoingTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DOING")?.map((task, index) => {
-      return <TaskCard data={task} id={index} />;
+      return <TaskCard data={task} id={index} callback={refresh} />;
     });
   };
 
   const renderDoneTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DONE")?.map((task, index) => {
-      return <TaskCard data={task} id={index} />;
+      return <TaskCard data={task} id={index} callback={refresh} />;
     });
   };
 
@@ -115,8 +131,8 @@ const Project = ({ id }: { id: number }) => {
         <div className="inline-flex gap-4">
           {/*  label */}
           <label
-            className="btn btn-active btn-secondary capitalize"
-            htmlFor={id.toString()}
+            className="btn btn-accent capitalize"
+            htmlFor={id.toString() + "project"}
           >
             new task
           </label>
@@ -126,14 +142,14 @@ const Project = ({ id }: { id: number }) => {
             callback={toggleProject}
           />
           {/* modal  */}
-          <Modal docid={id.toString()}>
+          <Modal docid={id.toString() + "project"}>
             {/* task form */}
-            <TaskForm />
+            <TaskForm type="new" onUpdate={refresh} />
           </Modal>
         </div>
       </div>
 
-      <div className="flex items-center flex-col max-h-[48rem] overflow-auto max-w-none">
+      <div className="h-[48rem] overflow-auto">
         {isError ? (
           <Alert
             status="warning"
@@ -141,18 +157,22 @@ const Project = ({ id }: { id: number }) => {
           />
         ) : isSuccess ? (
           [""].length > 0 ? (
-            <div className="grid grid-cols-3 gap-4 w-max">
-              <div className=" p-4 rounded-lg w-80 md:w-96">
-                <h2 className="text-xl font-semibold mb-4">To Do</h2>
-                {renderToDoTasks()}
-              </div>
-              <div className=" p-4 rounded-lg w-80 md:w-96">
-                <h2 className="text-xl font-semibold mb-4">Doing</h2>
-                {renderDoingTasks()}
-              </div>
-              <div className=" p-4 rounded-lg w-80 md:w-96">
-                <h2 className="text-xl font-semibold mb-4">Done</h2>
-                {renderDoneTasks()}
+            <div className="max-w-screen-xl mx-auto">
+              <div className="max-w-none overflow-x-auto">
+                <div className="grid grid-cols-3 gap-4 w-max">
+                  <div className=" p-4 rounded-lg w-80 md:w-96">
+                    <h2 className="text-xl font-semibold mb-4">To Do</h2>
+                    {renderToDoTasks()}
+                  </div>
+                  <div className=" p-4 rounded-lg w-80 md:w-96">
+                    <h2 className="text-xl font-semibold mb-4">Doing</h2>
+                    {renderDoingTasks()}
+                  </div>
+                  <div className=" p-4 rounded-lg w-80 md:w-96">
+                    <h2 className="text-xl font-semibold mb-4">Done</h2>
+                    {renderDoneTasks()}
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
@@ -166,10 +186,10 @@ const Project = ({ id }: { id: number }) => {
         )}
       </div>
 
-      <div className="bottom-0 left-0 absolute">
+      <div className="bottom-3 left-0 absolute">
         <Link
           to={`/projects`}
-          className="btn btn-link shadow-none capitalize justify-start shadow-lg"
+          className="btn btn-link shadow-none capitalize justify-start"
         >
           go back
         </Link>

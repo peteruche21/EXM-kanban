@@ -4,7 +4,7 @@ import { IActionButton } from "../../types";
 const ActionButton: FC<IActionButton> = ({ text, type, callback }) => {
   return (
     <button
-      className="btn btn-active btn-accent capitalize"
+      className="btn btn-accent capitalize"
       onClick={callback}
       type={type}
     >
