@@ -8,6 +8,14 @@ import { useState } from "react";
 //@ts-ignore
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import db from "../../db/polybase/sdk";
+import {
+  arrToBufArr,
+  keccak256,
+  keccakFromString,
+  sha256,
+  toBuffer,
+} from "ethereumjs-util";
 
 const ProjectForm = () => {
   const [{ wallet }] = useConnectWallet();
@@ -19,16 +27,18 @@ const ProjectForm = () => {
   } = useForm<IProject>();
 
   const mutation = useMutation({
-    mutationFn: (project: IProject) => {
-      return fetch("https://api-goerli.basescan.org");
+    mutationFn: async (project: IProject) => {
+      return await db.newProject(project);
     },
   });
 
   const onSubmit = async (data: IProject) => {
+    console.log(data);
     data = {
+      id: sha256(keccakFromString(data.name + data.owner)).toString(),
       ...data,
-      open: true,
       owner: wallet?.accounts[0].address as string,
+      open: true,
     };
 
     const result = await mutation.mutateAsync(data);
@@ -36,7 +46,7 @@ const ProjectForm = () => {
     if (mutation.isError) {
       console.log(mutation.error);
     }
-    console.log(result.status);
+    console.log(result.data);
     reset();
   };
 
@@ -79,8 +89,8 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
   } = useForm<ITask>();
 
   const createMutation = useMutation({
-    mutationFn: (task: ITask) => {
-      return fetch("https://api-goerli.basescan.org");
+    mutationFn: async (task: ITask) => {
+      return await db.create(task);
     },
   });
 
@@ -91,12 +101,22 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
   });
 
   const onSubmit = async (data: ITask) => {
-    if (startDate && stopDate) {
-      data = {
-        ...data,
-        duration: [startDate, stopDate!],
-      };
-    }
+    data = {
+      id: sha256(
+        keccakFromString(data.title + data.description!.toString())
+      ).toString(),
+      // @ts-ignore
+        projectId: id,
+      status: "TODO",
+      title: data.title,
+      description: data.description,
+      duration: [startDate!, stopDate!],
+      assignee: data.assignee,
+      PR: data.PR,
+      priority: data.priority,
+    };
+
+    console.log(data)
 
     const result =
       type === "new"
@@ -105,7 +125,7 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
     // alert the user
     createMutation.isError && console.log(createMutation.error);
     updateMutation.isError && console.log(updateMutation.error);
-    console.log(result.status);
+    console.log(result);
     reset({ title: "" });
     if (onUpdate) await onUpdate();
   };

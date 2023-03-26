@@ -4,7 +4,8 @@ import type { LoaderFunction, ActionFunction } from "react-router-dom";
 const walletAddr = z.string().startsWith("0x").length(42);
 
 export interface ITask {
-  projectId: number;
+  id?: string;
+  projectId: string;
   status?: "TODO" | "DOING" | "DONE";
   title?: string;
   description?: string;
@@ -16,6 +17,7 @@ export interface ITask {
 }
 
 export interface IProject {
+  id?: string;
   name: string;
   owner: z.infer<typeof walletAddr>;
   open: boolean;
@@ -71,13 +73,13 @@ export interface IActionButton {
 
 export interface ITaskCardProps {
   data: ITask;
-  id: number | string;
+  id:  string;
   callback?: () => Promise<void>;
 }
 
 export interface ITaskFormProps {
   data?: ITask;
   type: "new" | "update";
-  id?: string | number;
+  id?: string;
   onUpdate?: () => Promise<void>;
 }

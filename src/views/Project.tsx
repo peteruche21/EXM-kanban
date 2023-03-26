@@ -10,11 +10,12 @@ import Modal from "../components/Modal";
 import { IInput, ITask } from "../types";
 //@ts-ignore
 import { Draggable, Droppable } from "react-drag-and-drop";
+import db from "../db/polybase/sdk";
 
-const Project = ({ id }: { id: number }) => {
+const Project = ({ id }: { id: string }) => {
   const { isLoading, isFetched, isError, data, refetch, isSuccess } = useQuery({
     queryKey: ["projects"],
-    queryFn: async () => await fetch("https://api-goerli.basescan.org"),
+    queryFn: async () => await db.get(),
     retry: 5,
   });
 
@@ -39,51 +40,10 @@ const Project = ({ id }: { id: number }) => {
   };
 
   const filterTasks = (status: string) => {
-    return [
-      {
-        projectId: id,
-        status: "TODO",
-        title: "first task",
-        description: "my first actual task",
-        duration: [Date.now(), Date.now()],
-        assignee: "oxstring",
-        PR: "",
-        priority: "LOW",
-      },
-      {
-        projectId: id,
-        status: "DOING",
-        title: "second task",
-        description: "a god second task",
-        duration: [Date.now(), Date.now()],
-        assignee: "0xsting",
-        PR: "https://www.github.com",
-        priority: "HIGH",
-      },
-      {
-        projectId: id,
-        status: "DOING",
-        title: "second task",
-        description: "a god second task",
-        duration: [Date.now(), Date.now()],
-        assignee: "0xsting",
-        PR: "https://www.github.com",
-        priority: "HIGH",
-      },
-      {
-        projectId: id,
-        status: "DONE",
-        title: "third post",
-        description: "a good third description",
-        duration: [Date.now(), Date.now()],
-        assignee: "0xstring",
-        PR: "",
-        priority: "MEDIUM",
-      },
-    ].reduce((acc, task, index) => {
-      if (task.status === status && task.projectId === id) {
+    return data?.data.reduce((acc, task, index) => {
+      if (task.data.status === status && task.data.projectId === id) {
         //@ts-ignore
-        acc.push({ ...task, id: index });
+        acc.push(task);
       }
       return acc;
     }, [] as ITask[]);
@@ -92,8 +52,8 @@ const Project = ({ id }: { id: number }) => {
   const renderToDoTasks = (): JSX.Element[] | undefined => {
     return filterTasks("TODO")?.map((task, index) => {
       return (
-        <Draggable type="dnd" data={(task as any).id} key={index}>
-          <TaskCard data={task} id={index} callback={refresh} />
+        <Draggable type="dnd" data={task.id} key={index}>
+          <TaskCard data={task} id={task.id as string} callback={refresh} />
         </Draggable>
       );
     });
@@ -102,8 +62,8 @@ const Project = ({ id }: { id: number }) => {
   const renderDoingTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DOING")?.map((task, index) => {
       return (
-        <Draggable type="dnd" data={(task as any).id} key={index}>
-          <TaskCard data={task} id={index} callback={refresh} />
+        <Draggable type="dnd" data={task.id} key={index}>
+          <TaskCard data={task} id={task.id as string} callback={refresh} />
         </Draggable>
       );
     });
@@ -112,8 +72,8 @@ const Project = ({ id }: { id: number }) => {
   const renderDoneTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DONE")?.map((task, index) => {
       return (
-        <Draggable type="dnd" data={(task as any).id} key={index}>
-          <TaskCard data={task} id={index} callback={refresh} />
+        <Draggable type="dnd" data={task.id} key={index}>
+          <TaskCard data={task} id={task.id as string} callback={refresh} />
         </Draggable>
       );
     });
@@ -136,9 +96,9 @@ const Project = ({ id }: { id: number }) => {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                   d="M4.755 10.059a7.5 7.5 0 0112.548-3.364l1.903 1.903h-3.183a.75.75 0 100 1.5h4.992a.75.75 0 00.75-.75V4.356a.75.75 0 00-1.5 0v3.18l-1.9-1.9A9 9 0 003.306 9.67a.75.75 0 101.45.388zm15.408 3.352a.75.75 0 00-.919.53 7.5 7.5 0 01-12.548 3.364l-1.902-1.903h3.183a.75.75 0 000-1.5H2.984a.75.75 0 00-.75.75v4.992a.75.75 0 001.5 0v-3.18l1.9 1.9a9 9 0 0015.059-4.035.75.75 0 00-.53-.918z"
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                 ></path>
               </svg>
             </button>
@@ -148,7 +108,7 @@ const Project = ({ id }: { id: number }) => {
           {/*  label */}
           <label
             className="btn btn-accent capitalize"
-            htmlFor={id.toString() + "project"}
+            htmlFor={id.toString() + "project" + "special"}
           >
             new task
           </label>
@@ -158,9 +118,9 @@ const Project = ({ id }: { id: number }) => {
             callback={toggleProject}
           />
           {/* modal  */}
-          <Modal docid={id.toString() + "project"}>
+          <Modal docid={id.toString() + "project" + "special"}>
             {/* task form */}
-            <TaskForm type="new" onUpdate={refresh} />
+            <TaskForm type="new" id={id} onUpdate={refresh} />
           </Modal>
         </div>
       </div>
@@ -172,7 +132,7 @@ const Project = ({ id }: { id: number }) => {
             message="Please ensure you are connected to the internet."
           />
         ) : isSuccess ? (
-          [""].length > 0 ? (
+          data?.data?.length > 0 ? (
             <div className="max-w-screen-xl mx-auto">
               <div className="max-w-none overflow-x-auto">
                 <div className="grid grid-cols-3 gap-4 w-max">

@@ -6,7 +6,7 @@ const ProjectButton = ({
   open,
 }: {
   name: string;
-  id: number;
+  id: number | string;
   open: boolean;
 }) => {
   return (

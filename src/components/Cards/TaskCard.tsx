@@ -7,13 +7,13 @@ import Modal from "../Modal";
 
 const TaskCard = ({ data, id, callback }: ITaskCardProps) => {
   const mutation = useMutation({
-    mutationFn: (id: number) => {
+    mutationFn: (id: string) => {
       return fetch("https://api-goerli.basescan.org");
     },
   });
 
   const deleteNote = async () => {
-    await mutation.mutateAsync(id as number);
+    await mutation.mutateAsync(id);
     if (callback) await callback();
   };
 

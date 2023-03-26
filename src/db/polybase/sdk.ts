@@ -1,16 +1,13 @@
-require("dotenv").config();
 import { Polybase } from "@polybase/client";
 import { ethPersonalSign } from "@polybase/eth";
 import { toBuffer } from "ethereumjs-util";
 import Wallet from "ethereumjs-wallet";
 import { IProject, ITask } from "../../types";
-import schema from "./schema";
 
 export const ethWallet = Wallet.fromPrivateKey(
-  toBuffer(process.env.PRIVATE_KEY)
+  toBuffer(import.meta.env.VITE_PRIVATE_KEY)
 );
 
-console.log(process.env.PRIVATE_KEY);
 
 export class DbStore {
   private static instance: DbStore;
@@ -18,7 +15,7 @@ export class DbStore {
 
   private constructor() {
     this.db = new Polybase({
-      defaultNamespace: "paymasters-io",
+      defaultNamespace: "pk/0x2b92ed8e08e3ba4f1fa216b69ccef4554561c44771783fb759c2576219dcdad3d5658f4ec0c58720a1b3ba4d1505e020467bf2dfdb5e1025f99cc9eadd97b00d/third board",
     });
     this.db.signer((data) => {
       return {
@@ -35,10 +32,6 @@ export class DbStore {
     return DbStore.instance;
   }
 
-    async init() {
-    await this.db.applySchema(schema);
-  }
-
   async create(data: ITask) {
     return await this.db.collection("Tasks").create(Object.values(data));
   }
@@ -51,11 +44,13 @@ export class DbStore {
   }
 
   async get() {
-    return await this.db.collection("Tasks").get();
+    return await this.db.collection<ITask>("Tasks").get();
   }
 
   async getProjects() {
-    return await this.db.collection("Projects").get();
+    const result = await this.db.collection<IProject>("Projects").get();
+    console.log(result);
+    return result
   }
 
   async newProject(data: IProject) {
@@ -68,6 +63,5 @@ export class DbStore {
 }
 
 const db = DbStore.getOrCreateDbStore();
-void db.init()
 export type DB = typeof db;
 export default db;
