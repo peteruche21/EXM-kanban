@@ -13,7 +13,15 @@ import { Draggable, Droppable } from "react-drag-and-drop";
 import db from "../db/polybase/sdk";
 
 const Project = ({ id }: { id: string }) => {
-  const { isLoading, isFetched, isError, data, refetch, isSuccess } = useQuery({
+  const {
+    isLoading,
+    isFetched,
+    isFetching,
+    isError,
+    data,
+    refetch,
+    isSuccess,
+  } = useQuery({
     queryKey: ["tasks"],
     queryFn: async () => await db.get(),
     retry: 5,
@@ -94,8 +102,9 @@ const Project = ({ id }: { id: string }) => {
     <div className="w-full h-full mb-auto py-20 px-8 relative">
       <div className="flex justify-between mb-10 gap-10">
         <div className="inline-flex ">
-          {isLoading && <Loading />}
-          {isFetched && (
+          {isLoading || isFetching ? (
+            <Loading />
+          ) : (
             <button className="btn btn-circle" onClick={refresh}>
               <svg
                 aria-hidden="true"

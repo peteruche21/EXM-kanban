@@ -37,6 +37,10 @@ export class DbStore {
     return await this.db.collection("Tasks").create(Object.values(data));
   }
 
+  async remove(key: string) {
+    return await this.db.collection("Tasks").record(key).call("del");
+  }
+
   async update(key: string, data: ITask) {
     return await this.db
       .collection("Tasks")
@@ -44,6 +48,7 @@ export class DbStore {
       .call("update", Object.values(data));
   }
 
+  // working
   async changeStatus(key: string, status: string) {
     return await this.db
       .collection("Tasks")

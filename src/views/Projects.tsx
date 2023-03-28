@@ -7,7 +7,15 @@ import { ProjectForm } from "../components/Form/Forms";
 import db from "../db/polybase/sdk";
 
 const Projects = () => {
-  const { isLoading, isFetched, isError, data, refetch, isSuccess } = useQuery({
+  const {
+    isLoading,
+    isFetched,
+    isFetching,
+    isError,
+    data,
+    refetch,
+    isSuccess,
+  } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => db.getProjects(),
     retry: 5,
@@ -34,8 +42,9 @@ const Projects = () => {
     <div className="w-full h-full mb-auto py-20 px-8">
       <div className="flex justify-between mb-10 gap-10">
         <div className="inline-flex ">
-          {isLoading && <Loading />}
-          {isFetched && (
+          {isLoading || isFetching ? (
+            <Loading />
+          ) : (
             <button className="btn btn-circle" onClick={refresh}>
               <svg
                 aria-hidden="true"

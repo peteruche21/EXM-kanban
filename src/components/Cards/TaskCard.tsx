@@ -1,14 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import moment from "moment";
-import React from "react";
+import db from "../../db/polybase/sdk";
 import { ITaskCardProps } from "../../types";
 import { TaskForm } from "../Form/Forms";
 import Modal from "../Modal";
+import ViewTaskCard from "./ViewTaskCard";
 
 const TaskCard = ({ data, id, callback }: ITaskCardProps) => {
   const mutation = useMutation({
-    mutationFn: (id: string) => {
-      return fetch("https://api-goerli.basescan.org");
+    mutationFn: async (id: string) => {
+      return  await db.remove(id);
     },
   });
 
@@ -19,7 +20,7 @@ const TaskCard = ({ data, id, callback }: ITaskCardProps) => {
 
   return (
     <div className="card mb-8 max-w-[384px] break-inside-avoid shadow-xl bg-neutral">
-      <label htmlFor={id.toString() + "task"}>
+      <label htmlFor={id + "task view"}>
         <div className="card-body">
           <div className="badge-secondary badge font-bold ml-auto">
             {data.priority}
@@ -27,10 +28,10 @@ const TaskCard = ({ data, id, callback }: ITaskCardProps) => {
           <h2 className="card-title">{data.title}</h2>
           <div className="flex gap-4">
             <h4 className="text-sm font-bold">
-              from: {moment.unix(data.duration?.[0]!).format("DD MM") ?? "-"}
+              from: {moment.unix(data.duration?.[0]!).format("DD-MM") ?? "-"}
             </h4>
             <h4 className="text-sm font-bold">
-              To: {moment.unix(data.duration?.[1]!).format("DD MM") ?? "-"}
+              To: {moment.unix(data.duration?.[1]!).format("DD-MM") ?? "-"}
             </h4>
           </div>
           <h4 className="text-sm font-bold italic text-left">
@@ -46,7 +47,7 @@ const TaskCard = ({ data, id, callback }: ITaskCardProps) => {
       </label>
 
       <div className="card-actions btn-group absolute -bottom-3 right-5 justify-end gap-0">
-        {/* pull request link */}
+        {/* pull request link
         {data.PR && (
           <a href={data.PR} className="btn btn-sm">
             <svg
@@ -62,7 +63,7 @@ const TaskCard = ({ data, id, callback }: ITaskCardProps) => {
               <path d="M13.405 1.72a.75.75 0 0 1 0 1.06L12.185 4h4.065A3.75 3.75 0 0 1 20 7.75v8.75a.75.75 0 0 1-1.5 0V7.75a2.25 2.25 0 0 0-2.25-2.25h-4.064l1.22 1.22a.75.75 0 0 1-1.061 1.06l-2.5-2.5a.75.75 0 0 1 0-1.06l2.5-2.5a.75.75 0 0 1 1.06 0ZM4.75 7.25A.75.75 0 0 1 5.5 8v8A.75.75 0 0 1 4 16V8a.75.75 0 0 1 .75-.75Z"></path>
             </svg>
           </a>
-        )}
+        )} */}
         {/* edit link */}
         <label className="btn btn-sm" htmlFor={id.toString() + "task"}>
           <svg
@@ -112,6 +113,9 @@ const TaskCard = ({ data, id, callback }: ITaskCardProps) => {
 
       <Modal docid={id + "task"}>
         <TaskForm type="update" id={id} onUpdate={callback} data={data} />
+      </Modal>
+      <Modal docid={id + "task view"}>
+        <ViewTaskCard data={data} />
       </Modal>
     </div>
   );
