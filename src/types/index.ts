@@ -66,6 +66,7 @@ export interface IActionButton {
 export interface ITaskCardProps {
   data: ITask;
   id:  string;
+  open?: boolean;
   callback?: () => Promise<void>;
 }
 

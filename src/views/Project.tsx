@@ -27,6 +27,12 @@ const Project = ({ id }: { id: string }) => {
     retry: 5,
   });
 
+  const { data: project, refetch: projectRefetch } = useQuery({
+    queryKey: ["project"],
+    queryFn: async () => db.getProject(id),
+    retry: 5,
+  });
+
   const dragMutation = useMutation({
     mutationFn: async (data: {
       key: string;
@@ -38,7 +44,7 @@ const Project = ({ id }: { id: string }) => {
 
   const toggleMutation = useMutation({
     mutationFn: async () => {
-      return await db.closeProject(id);
+      return await db.toggleProject(id);
     },
   });
 
@@ -48,7 +54,7 @@ const Project = ({ id }: { id: string }) => {
 
   const toggleProject = async () => {
     await toggleMutation.mutateAsync();
-    await refetch();
+    await projectRefetch();
   };
 
   const filterTasks = (status: string) => {
@@ -64,7 +70,12 @@ const Project = ({ id }: { id: string }) => {
     return filterTasks("TODO")?.map((task, index) => {
       return (
         <Draggable type="dnd" data={task.id} key={index}>
-          <TaskCard data={task} id={task.id} callback={refresh} />
+          <TaskCard
+            data={task}
+            id={task.id}
+            open={project?.data.open}
+            callback={refresh}
+          />
         </Draggable>
       );
     });
@@ -74,7 +85,12 @@ const Project = ({ id }: { id: string }) => {
     return filterTasks("DOING")?.map((task, index) => {
       return (
         <Draggable type="dnd" data={task.id} key={index}>
-          <TaskCard data={task} id={task.id} callback={refresh} />
+          <TaskCard
+            data={task}
+            id={task.id}
+            open={project?.data.open}
+            callback={refresh}
+          />
         </Draggable>
       );
     });
@@ -84,7 +100,12 @@ const Project = ({ id }: { id: string }) => {
     return filterTasks("DONE")?.map((task, index) => {
       return (
         <Draggable type="dnd" data={task.id} key={index}>
-          <TaskCard data={task} id={task.id} callback={refresh} />
+          <TaskCard
+            data={task}
+            id={task.id}
+            open={project?.data.open}
+            callback={refresh}
+          />
         </Draggable>
       );
     });
@@ -94,8 +115,10 @@ const Project = ({ id }: { id: string }) => {
     data: { dnd: string },
     to: "TODO" | "DOING" | "DONE"
   ) => {
-    await dragMutation.mutateAsync({ key: data.dnd, status: to });
-    await refetch();
+    if (project?.data.open) {
+      await dragMutation.mutateAsync({ key: data.dnd, status: to });
+      await refetch();
+    }
   };
 
   return (
@@ -124,11 +147,16 @@ const Project = ({ id }: { id: string }) => {
         </div>
         <div className="inline-flex gap-4">
           {/*  label */}
-          <label className="btn btn-accent capitalize" htmlFor={id + "project"}>
-            new task
-          </label>
+          {project?.data.open && (
+            <label
+              className={"btn btn-accent capitalize"}
+              htmlFor={id + "project"}
+            >
+              new task
+            </label>
+          )}
           <ActionButton
-            text="close project"
+            text={project?.data.open ? "close project" : "re-open"}
             type="button"
             callback={toggleProject}
           />

@@ -36,7 +36,7 @@ export class DbStore {
   async create(data: ITask) {
     return await this.db.collection("Tasks").create(Object.values(data));
   }
-
+  // working
   async remove(key: string) {
     return await this.db.collection("Tasks").record(key).call("del");
   }
@@ -63,8 +63,12 @@ export class DbStore {
 
   // working
   async getProjects() {
-    const result = await this.db.collection<IProject>("Projects").get();
-    return result;
+    return await this.db.collection<IProject>("Projects").get();
+  }
+
+  // working
+  async getProject(key: string) {
+    return await this.db.collection<IProject>("Projects").record(key).get();
   }
 
   // working
@@ -72,8 +76,9 @@ export class DbStore {
     return await this.db.collection("Projects").create(Object.values(data));
   }
 
-  async closeProject(key: string) {
-    return await this.db.collection("Projects").record(key).call("close");
+  // working
+  async toggleProject(key: string) {
+    return await this.db.collection("Projects").record(key).call("toggle");
   }
 }
 

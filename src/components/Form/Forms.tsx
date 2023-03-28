@@ -74,8 +74,12 @@ const ProjectForm = ({ callback }: { callback: () => void }) => {
 };
 
 const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
-  const [startDate, setStartDate] = useState<number>();
-  const [stopDate, setStopDate] = useState<number>();
+  const [startDate, setStartDate] = useState<number | undefined>(
+    data?.duration![0]
+  );
+  const [stopDate, setStopDate] = useState<number | undefined>(
+    data?.duration![1]
+  );
 
   const {
     register,
@@ -92,8 +96,8 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (task: ITask) => {
-      return fetch("https://api-goerli.basescan.org");
+    mutationFn: async (task: ITask) => {
+      return await db.update(id, task);
     },
   });
 
@@ -114,7 +118,16 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
       console.log(data);
       result = await createMutation.mutateAsync(data);
     } else {
-      await updateMutation.mutateAsync(data);
+      data = {
+        title: data.title,
+        description: data.description,
+        duration: startDate && stopDate ? [startDate, stopDate] : data.duration,
+        assignee: data.assignee,
+        PR: data.PR,
+        priority: data.priority
+      } as any;
+      console.log(data);
+      result = await updateMutation.mutateAsync(data);
     }
     // alert the user
     createMutation.isError && console.log(createMutation.error);
@@ -127,7 +140,7 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
       PR: "",
       duration: [],
       assignee: "",
-      priority: undefined,
+      priority: "LOW",
     });
     setStartDate(undefined);
     setStopDate(undefined);
@@ -188,6 +201,7 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
             <select
               className="select select-ghost"
               onChange={(val) => onChange(val.target.value)}
+              value={data?.priority}
             >
               <option>Priority</option>
               <option defaultValue="LOW" value="LOW">
@@ -225,8 +239,12 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
           type="text"
           id="PR"
           placeholder="pull request"
-          className="input  w-full max-w-md"
-          {...register("PR", { value: data?.PR })}
+          className={`input  w-full max-w-md ${errors.PR && "border-red-500"}`}
+          {...register("PR", {
+            value: data?.PR,
+            pattern:
+              /https:\/\/github.com\/[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+\/pull\/\d+/,
+          })}
         />
       </div>
 
