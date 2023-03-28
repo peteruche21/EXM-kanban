@@ -8,14 +8,14 @@ export const ethWallet = Wallet.fromPrivateKey(
   toBuffer(import.meta.env.VITE_PRIVATE_KEY)
 );
 
-
 export class DbStore {
   private static instance: DbStore;
   private db: Polybase;
 
   private constructor() {
     this.db = new Polybase({
-      defaultNamespace: "pk/0x2b92ed8e08e3ba4f1fa216b69ccef4554561c44771783fb759c2576219dcdad3d5658f4ec0c58720a1b3ba4d1505e020467bf2dfdb5e1025f99cc9eadd97b00d/third board",
+      defaultNamespace:
+        "pk/0x2b92ed8e08e3ba4f1fa216b69ccef4554561c44771783fb759c2576219dcdad3d5658f4ec0c58720a1b3ba4d1505e020467bf2dfdb5e1025f99cc9eadd97b00d/third board",
     });
     this.db.signer((data) => {
       return {
@@ -32,6 +32,7 @@ export class DbStore {
     return DbStore.instance;
   }
 
+  // working
   async create(data: ITask) {
     return await this.db.collection("Tasks").create(Object.values(data));
   }
@@ -43,16 +44,25 @@ export class DbStore {
       .call("update", Object.values(data));
   }
 
+  async changeStatus(key: string, status: string) {
+    return await this.db
+      .collection("Tasks")
+      .record(key)
+      .call("setStatus", [status]);
+  }
+
+  // working
   async get() {
     return await this.db.collection<ITask>("Tasks").get();
   }
 
+  // working
   async getProjects() {
     const result = await this.db.collection<IProject>("Projects").get();
-    console.log(result);
-    return result
+    return result;
   }
 
+  // working
   async newProject(data: IProject) {
     return await this.db.collection("Projects").create(Object.values(data));
   }

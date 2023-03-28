@@ -7,7 +7,7 @@ import Empty from "../components/Flow/Empty";
 import Loading from "../components/Flow/Loading";
 import { TaskForm } from "../components/Form/Forms";
 import Modal from "../components/Modal";
-import { IInput, ITask } from "../types";
+import { ITask } from "../types";
 //@ts-ignore
 import { Draggable, Droppable } from "react-drag-and-drop";
 import db from "../db/polybase/sdk";
@@ -20,8 +20,11 @@ const Project = ({ id }: { id: string }) => {
   });
 
   const dragMutation = useMutation({
-    mutationFn: (input: IInput) => {
-      return fetch("https://api-goerli.basescan.org");
+    mutationFn: async (data: {
+      key: string;
+      status: "TODO" | "DOING" | "DONE";
+    }) => {
+      return await db.changeStatus(data.key, data.status);
     },
   });
 
@@ -37,7 +40,7 @@ const Project = ({ id }: { id: string }) => {
 
   const toggleProject = async () => {
     await toggleMutation.mutateAsync();
-    refetch();
+    await refetch();
   };
 
   const filterTasks = (status: string) => {
@@ -79,9 +82,12 @@ const Project = ({ id }: { id: string }) => {
     });
   };
 
-  const handleDrop = (data: any, event: any, to: "TODO" | "DOING" | "DONE") => {
-    // updates the task status.
-    console.log(data, event);
+  const handleDrop = async (
+    data: { dnd: string },
+    to: "TODO" | "DOING" | "DONE"
+  ) => {
+    await dragMutation.mutateAsync({ key: data.dnd, status: to });
+    await refetch();
   };
 
   return (
@@ -136,21 +142,32 @@ const Project = ({ id }: { id: string }) => {
             <div className="max-w-screen-xl mx-auto">
               <div className="max-w-none overflow-x-auto">
                 <div className="grid grid-cols-3 gap-4 w-max">
-                  <Droppable types={["dnd"]} onDrop={handleDrop}>
+                  <Droppable
+                    types={["dnd"]}
+                    onDrop={(data: { dnd: string }) => handleDrop(data, "TODO")}
+                  >
                     <div className=" p-4 rounded-lg w-80 md:w-96">
                       <h2 className="text-xl font-semibold mb-4">To Do</h2>
                       {renderToDoTasks()}
                     </div>
                   </Droppable>
 
-                  <Droppable types={["dnd"]} onDrop={handleDrop}>
+                  <Droppable
+                    types={["dnd"]}
+                    onDrop={(data: { dnd: string }) =>
+                      handleDrop(data, "DOING")
+                    }
+                  >
                     <div className=" p-4 rounded-lg w-80 md:w-96">
                       <h2 className="text-xl font-semibold mb-4">Doing</h2>
                       {renderDoingTasks()}
                     </div>
                   </Droppable>
 
-                  <Droppable types={["dnd"]} onDrop={handleDrop}>
+                  <Droppable
+                    types={["dnd"]}
+                    onDrop={(data: { dnd: string }) => handleDrop(data, "DONE")}
+                  >
                     <div className=" p-4 rounded-lg w-80 md:w-96">
                       <h2 className="text-xl font-semibold mb-4">Done</h2>
                       {renderDoneTasks()}
