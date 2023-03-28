@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
+import Empty from "../components/Flow/Empty";
 import Project from "../views/Project";
 
 const ProjectPage = () => {
   const { id } = useParams();
-  return <Project id={parseInt(id as string)} />;
+  if (id) return  <Project id={id} />
+  return <Empty message="Project Not Found"/>
 };
 
 export default ProjectPage;

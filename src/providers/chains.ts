@@ -66,9 +66,9 @@ export const chains = [
     rpcUrl: "https://alpha-rpc.scroll.io/l2",
   },
   {
-    id: 100,
+    id: 10200,
     token: "xDai",
-    label: "Gnosis",
+    label: "Chiado",
     rpcUrl: "https://rpc.chiadochain.net",
   },
   {

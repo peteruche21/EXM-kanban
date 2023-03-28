@@ -9,15 +9,10 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import db from "../../db/polybase/sdk";
-import {
-  arrToBufArr,
-  keccak256,
-  keccakFromString,
-  sha256,
-  toBuffer,
-} from "ethereumjs-util";
+import { generateId } from "../../utils/generateId";
+import moment from "moment";
 
-const ProjectForm = () => {
+const ProjectForm = ({ callback }: { callback: () => void }) => {
   const [{ wallet }] = useConnectWallet();
   const {
     register,
@@ -35,8 +30,8 @@ const ProjectForm = () => {
   const onSubmit = async (data: IProject) => {
     console.log(data);
     data = {
-      id: sha256(keccakFromString(data.name + data.owner)).toString(),
-      ...data,
+      id: generateId("project", data.name),
+      name: data.name,
       owner: wallet?.accounts[0].address as string,
       open: true,
     };
@@ -47,6 +42,7 @@ const ProjectForm = () => {
       console.log(mutation.error);
     }
     console.log(result.data);
+    callback();
     reset();
   };
 
@@ -77,8 +73,8 @@ const ProjectForm = () => {
 };
 
 const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
-  const [startDate, setStartDate] = useState();
-  const [stopDate, setStopDate] = useState();
+  const [startDate, setStartDate] = useState<number>();
+  const [stopDate, setStopDate] = useState<number>();
 
   const {
     register,
@@ -101,32 +97,39 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
   });
 
   const onSubmit = async (data: ITask) => {
-    data = {
-      id: sha256(
-        keccakFromString(data.title + data.description!.toString())
-      ).toString(),
-      // @ts-ignore
+    let result;
+    if (type == "new") {
+      data = {
+        id: generateId("task", data.title),
         projectId: id,
-      status: "TODO",
-      title: data.title,
-      description: data.description,
-      duration: [startDate!, stopDate!],
-      assignee: data.assignee,
-      PR: data.PR,
-      priority: data.priority,
-    };
-
-    console.log(data)
-
-    const result =
-      type === "new"
-        ? await createMutation.mutateAsync(data)
-        : await updateMutation.mutateAsync(data);
+        status: "TODO",
+        title: data.title,
+        description: data.description,
+        duration: startDate && stopDate ? [startDate, stopDate] : undefined,
+        assignee: data.assignee,
+        PR: data.PR,
+        priority: data.priority,
+      };
+      console.log(data);
+      result = await createMutation.mutateAsync(data);
+    } else {
+      await updateMutation.mutateAsync(data);
+    }
     // alert the user
     createMutation.isError && console.log(createMutation.error);
     updateMutation.isError && console.log(updateMutation.error);
     console.log(result);
-    reset({ title: "" });
+    reset({
+      title: "",
+      description: "",
+      status: undefined,
+      PR: "",
+      duration: [],
+      assignee: "",
+      priority: undefined,
+    });
+    setStartDate(undefined);
+    setStopDate(undefined);
     if (onUpdate) await onUpdate();
   };
 
@@ -148,7 +151,7 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
       <textarea
         id="body"
         placeholder="description"
-        className={`textarea-bordered textarea textarea-lg h-[400px] w-full max-w-md ${
+        className={`textarea-bordered textarea textarea-lg h-[150px] w-full max-w-md ${
           errors.description && "border-red-500"
         }`}
         {...register("description", {
@@ -163,7 +166,7 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
         <div className="border border-gray-500 rounded-lg">
           <DatePicker
             selected={startDate}
-            onChange={(date: any) => setStartDate(date)}
+            onChange={(date: any) => setStartDate(moment(date).unix())}
           />
         </div>
 
@@ -171,7 +174,7 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
         <div className="border border-gray-500 rounded-lg">
           <DatePicker
             selected={stopDate}
-            onChange={(date: any) => setStopDate(date)}
+            onChange={(date: any) => setStopDate(moment(date).unix())}
           />
         </div>
       </div>

@@ -53,7 +53,7 @@ const Projects = () => {
             </button>
           )}
         </div>
-        <ProjectForm />
+        <ProjectForm callback={refresh} />
       </div>
 
       <div className="max-h-[48rem]">
@@ -73,10 +73,14 @@ const Projects = () => {
             <Empty message="No Project Found" />
           )
         ) : (
-          <Alert
-            status="error"
-            message="Oops! Something happened. please try again!"
-          />
+          isFetched &&
+          !isError &&
+          !isSuccess && (
+            <Alert
+              status="error"
+              message="Oops! Something happened. please try again!"
+            />
+          )
         )}
       </div>
     </div>

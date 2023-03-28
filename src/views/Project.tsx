@@ -14,7 +14,7 @@ import db from "../db/polybase/sdk";
 
 const Project = ({ id }: { id: string }) => {
   const { isLoading, isFetched, isError, data, refetch, isSuccess } = useQuery({
-    queryKey: ["projects"],
+    queryKey: ["tasks"],
     queryFn: async () => await db.get(),
     retry: 5,
   });
@@ -26,8 +26,8 @@ const Project = ({ id }: { id: string }) => {
   });
 
   const toggleMutation = useMutation({
-    mutationFn: () => {
-      return fetch("https://api-goerli.basescan.org");
+    mutationFn: async () => {
+      return await db.closeProject(id);
     },
   });
 
@@ -37,13 +37,13 @@ const Project = ({ id }: { id: string }) => {
 
   const toggleProject = async () => {
     await toggleMutation.mutateAsync();
+    refetch();
   };
 
   const filterTasks = (status: string) => {
-    return data?.data.reduce((acc, task, index) => {
+    return data?.data.reduce((acc, task) => {
       if (task.data.status === status && task.data.projectId === id) {
-        //@ts-ignore
-        acc.push(task);
+        acc.push(task.data);
       }
       return acc;
     }, [] as ITask[]);
@@ -53,7 +53,7 @@ const Project = ({ id }: { id: string }) => {
     return filterTasks("TODO")?.map((task, index) => {
       return (
         <Draggable type="dnd" data={task.id} key={index}>
-          <TaskCard data={task} id={task.id as string} callback={refresh} />
+          <TaskCard data={task} id={task.id} callback={refresh} />
         </Draggable>
       );
     });
@@ -63,7 +63,7 @@ const Project = ({ id }: { id: string }) => {
     return filterTasks("DOING")?.map((task, index) => {
       return (
         <Draggable type="dnd" data={task.id} key={index}>
-          <TaskCard data={task} id={task.id as string} callback={refresh} />
+          <TaskCard data={task} id={task.id} callback={refresh} />
         </Draggable>
       );
     });
@@ -73,14 +73,17 @@ const Project = ({ id }: { id: string }) => {
     return filterTasks("DONE")?.map((task, index) => {
       return (
         <Draggable type="dnd" data={task.id} key={index}>
-          <TaskCard data={task} id={task.id as string} callback={refresh} />
+          <TaskCard data={task} id={task.id} callback={refresh} />
         </Draggable>
       );
     });
   };
-  const handleDrop = (data: any, event: any) => {
+
+  const handleDrop = (data: any, event: any, to: "TODO" | "DOING" | "DONE") => {
+    // updates the task status.
     console.log(data, event);
   };
+
   return (
     <div className="w-full h-full mb-auto py-20 px-8 relative">
       <div className="flex justify-between mb-10 gap-10">
@@ -106,10 +109,7 @@ const Project = ({ id }: { id: string }) => {
         </div>
         <div className="inline-flex gap-4">
           {/*  label */}
-          <label
-            className="btn btn-accent capitalize"
-            htmlFor={id.toString() + "project" + "special"}
-          >
+          <label className="btn btn-accent capitalize" htmlFor={id + "project"}>
             new task
           </label>
           <ActionButton
@@ -118,7 +118,7 @@ const Project = ({ id }: { id: string }) => {
             callback={toggleProject}
           />
           {/* modal  */}
-          <Modal docid={id.toString() + "project" + "special"}>
+          <Modal docid={id + "project"}>
             {/* task form */}
             <TaskForm type="new" id={id} onUpdate={refresh} />
           </Modal>
@@ -163,10 +163,14 @@ const Project = ({ id }: { id: string }) => {
             <Empty message="No Task Created" />
           )
         ) : (
-          <Alert
-            status="error"
-            message="Oops! Something happened. please try again!"
-          />
+          isFetched &&
+          !isError &&
+          !isSuccess && (
+            <Alert
+              status="error"
+              message="Oops! Something happened. please try again!"
+            />
+          )
         )}
       </div>
 
