@@ -216,9 +216,9 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
         <input
           type="text"
           id="assignee"
-          placeholder="assign"
+          placeholder="0x..."
           className="input w-44"
-          {...register("assignee", { value: data?.assignee })}
+          {...register("assignee", { value: data?.assignee, pattern: /^0x[a-fA-F0-9]{40}$/ })}
         />
       </div>
 
