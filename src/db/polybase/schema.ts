@@ -1,31 +1,31 @@
 const schema = `
 @public
 collection Tasks {
-    id: number
-    projectId: number
-    status: string
-    title: string
-    description: string
-    duration?: number[]
-    assignee?: string
-    PR?: string
-    priority?: string
-    comments?: string[]
+    id: string;
+    projectId: string;
+    status: string;
+    title: string;
+    description: string;
+    duration?: number[];
+    assignee?: string;
+    PR?: string;
+    priority?: string;
+    comments?: string[];
     creator: PublicKey;
 
     constructor (
       id: string,
-      pid: number, 
+      projectId: string, 
       status: string, 
       title: string, 
       description: string,
       duration?: number[],
       assignee?: string,
       PR?: string,
-      priority?: string,
+      priority?: string
       ) {
       this.id = id;
-      this.projectId = pid;
+      this.projectId = projectId;
       this.status = status;
       this.title = title;
       this.description = description;
@@ -38,13 +38,12 @@ collection Tasks {
     }
  
     update (
-      status: string, 
       title: string, 
       description: string,
       duration?: number[],
       assignee?: string,
       PR?: string,
-      priority?: string,
+      priority?: string
     )  {
       if (this.creator != ctx.publicKey) {
         throw error('invalid public key');
@@ -68,14 +67,22 @@ collection Tasks {
       this.comments.push(comment);
     }
 
+    del() {
+      if (this.creator != ctx.publicKey) {
+          throw error('invalid public key');
+        }
+      selfdestruct();
+    }
+
   }
 
   @public
   collection Projects {
-    id: string
-    name: string
-    owner: string
-    open: boolean
+    id: string;
+    name: string;
+    owner: string;
+    open: boolean;
+    creator: PublicKey;
 
     constructor (
       id: string,
@@ -87,12 +94,16 @@ collection Tasks {
       this.name = name;
       this.owner = owner;
       this.open = true;
+      if (ctx.publicKey)
+        this.creator = ctx.publicKey;
     }
 
-    close() {
-      this.open = false;
+    toggle() {
+      if (this.creator != ctx.publicKey) {
+        throw error('invalid public key');
+      }
+      this.open = !this.open;
     }
-
   }`;
 
 export default schema;

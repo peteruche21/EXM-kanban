@@ -18,7 +18,7 @@ export const pass = {
 
   // web3onboard id
   dappId: import.meta.env.BLOCKNATIVE_API_KEY,
-
+  namespace: "third board",
   // wallet connect
   wcProjectId: "41a6cd3849f68c343764b1d875029c86",
   uauthClientID: "2d14b025-cb94-44b9-85ac-ce2397e6f10b"
