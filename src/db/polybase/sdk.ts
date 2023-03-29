@@ -7,7 +7,7 @@ import { IProject, ITask } from "../../types";
 import schema from "./schema";
 
 export const ethWallet = Wallet.fromPrivateKey(
-  toBuffer(import.meta.env.VITE_PRIVATE_KEY)
+  toBuffer(pass.privKey)
 );
 
 export class DbStore {

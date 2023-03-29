@@ -13,8 +13,8 @@ const ProjectButton = ({
     <div className="break-inside-avoid max-w-sm mb-8">
       <Link
         to={`/${id}`}
-        className={`btn btn-block capitalize justify-start shadow-lg ${
-          open && "btn-active glass"
+        className={`btn btn-block capitalize justify-start shadow-lg btn-accent ${
+          open ?  "" : "btn-outline"
         }`}
       >
         {name}

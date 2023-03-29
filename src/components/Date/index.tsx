@@ -12,14 +12,14 @@ const DateButton: FC<IDateButton> = ({ value, setValue }) => {
   const ExampleCustomInput = forwardRef<
     HTMLButtonElement,
     { value?: any; onClick?: any }
-  >(({ value, onClick }, ref) => (
+  >(({ value: Val, onClick }, ref) => (
     <button
       className="btn btn-sm min-w-[8rem] inline-flex justify-end"
       type="button"
       onClick={onClick}
       ref={ref}
     >
-      {value}
+      {value && moment.unix(value).format("DD-MM-YYYY")}
       <span className="pl-2">
         <svg
           aria-hidden="true"

@@ -39,10 +39,10 @@ const mewWallet = mewWalletModule();
 
 const wallets = [
   injected,
-  ledger,
   coinbase,
-  uauth,
   walletConnect,
+  ledger,
+  uauth,
   mewWallet,
   gnosis,
   torus,
@@ -50,9 +50,10 @@ const wallets = [
   enrkyptModule,
 ];
 
-export const web3Onboard = init({
+const options = {
   connect: {
     autoConnectLastWallet: true,
+    showSidebar: false,
   },
   wallets,
   chains,
@@ -80,4 +81,6 @@ export const web3Onboard = init({
     },
   },
   theme: "dark",
-});
+};
+
+export const web3Onboard = init(options as any);

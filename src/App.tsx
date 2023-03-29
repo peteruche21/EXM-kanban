@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { validateWithWhal3s } from "./utils/gate";
 import { RouteProvider } from "./providers/router";
+import { isAddress } from "ethers/lib/utils";
 
 function App() {
   const [{ wallet }] = useConnectWallet();
@@ -28,7 +29,7 @@ function App() {
         if (location.pathname !== "/" && location.pathname === "/login") navigate(to);
         break;
       default:
-        if (location.pathname !== "/" && location.pathname !== to) navigate(to);
+        if (location.pathname !== "/" && !isAddress(location.pathname.slice(1, 43)) && location.pathname !== to) navigate(to);
         break;
     }
   };
@@ -44,7 +45,7 @@ function App() {
         if (wallet) {
           (!isSuccess || isError) && (await refetch());
           if (isSuccess) {
-            setValid(data?.valid);
+            setValid(data?.valid as boolean);
             data?.valid && reRoute("/projects");
           }
           break;

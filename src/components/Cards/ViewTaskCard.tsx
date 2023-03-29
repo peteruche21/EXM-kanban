@@ -44,13 +44,17 @@ const ViewTaskCard = ({ data }: { data: ITask }) => {
           <h4 className="text-sm font-bold">
             from:
             <span className="pl-3 text-primary">
-              {moment.unix(data.duration?.[0]!).format("DD-MM-YYYY") ?? "-"}
+              {data.duration?.length === 2
+                ? moment.unix(data.duration?.[0]!).format("DD-MM-YYYY")
+                : "---"}
             </span>
           </h4>
           <h4 className="text-sm font-bold">
             To:
             <span className="pl-3 text-primary">
-              {moment.unix(data.duration?.[1]!).format("DD-MM-YYYY") ?? "-"}
+              {data.duration?.length === 2
+                ? moment.unix(data.duration?.[1]!).format("DD-MM-YYYY")
+                : "---"}
             </span>
           </h4>
         </div>

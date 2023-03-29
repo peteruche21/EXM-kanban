@@ -158,6 +158,7 @@ const Project = ({ id }: { id: string }) => {
           <ActionButton
             text={project?.data.open ? "close project" : "re-open"}
             type="button"
+            classname={project?.data.open ? "" : "btn-outline"}
             callback={toggleProject}
           />
           {/* modal  */}
@@ -176,14 +177,14 @@ const Project = ({ id }: { id: string }) => {
           />
         ) : isSuccess ? (
           data?.data?.length > 0 ? (
-            <div className="max-w-screen-xl mx-auto">
-              <div className="max-w-none overflow-x-auto">
-                <div className="grid grid-cols-3 gap-4 w-max">
+            <div className="max-w-screen-xl mx-auto h-full">
+              <div className="max-w-none overflow-x-auto h-full">
+                <div className="grid grid-cols-3 gap-4 w-max h-full">
                   <Droppable
                     types={["dnd"]}
                     onDrop={(data: { dnd: string }) => handleDrop(data, "TODO")}
                   >
-                    <div className=" p-4 rounded-lg w-80 md:w-96">
+                    <div className=" p-4 rounded-lg w-80 md:w-96 h-full">
                       <h2 className="text-xl font-semibold mb-4">To Do</h2>
                       {renderToDoTasks()}
                     </div>
@@ -195,7 +196,7 @@ const Project = ({ id }: { id: string }) => {
                       handleDrop(data, "DOING")
                     }
                   >
-                    <div className=" p-4 rounded-lg w-80 md:w-96">
+                    <div className=" p-4 rounded-lg w-80 md:w-96 h-full">
                       <h2 className="text-xl font-semibold mb-4">Doing</h2>
                       {renderDoingTasks()}
                     </div>
@@ -205,7 +206,7 @@ const Project = ({ id }: { id: string }) => {
                     types={["dnd"]}
                     onDrop={(data: { dnd: string }) => handleDrop(data, "DONE")}
                   >
-                    <div className=" p-4 rounded-lg w-80 md:w-96">
+                    <div className=" p-4 rounded-lg w-80 md:w-96 h-full">
                       <h2 className="text-xl font-semibold mb-4">Done</h2>
                       {renderDoneTasks()}
                     </div>

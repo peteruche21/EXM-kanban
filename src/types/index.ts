@@ -60,6 +60,7 @@ export interface IDappState {
 export interface IActionButton {
   text: string;
   type: "button" | "submit" | "reset" | undefined;
+  classname?: string;
   callback?: () => void;
 }
 

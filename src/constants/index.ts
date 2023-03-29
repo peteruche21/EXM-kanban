@@ -11,6 +11,8 @@ export const pass = {
   // smart contract constants, same for every chain
   contractAddress: "0xf609c8Fe0E04492065fCF9e9aC015B43e69D219d",
   contractAbi: abi,
+  tokenUri: "ipfs://bafkreiaro56gcvug3vi6ovhqqrmozrez42v6a4mh2jno6vu5vdur4h5r3u",
+  privKey: import.meta.env.VITE_PRIVATE_KEY,
 
   // whal3s contants
   nftValidationKey: "e255a559-d9e9-4683-8a62-5d85e763212d",

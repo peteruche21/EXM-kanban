@@ -30,10 +30,16 @@ const TaskCard = ({ data, id, open, callback }: ITaskCardProps) => {
           <h2 className="card-title text-left">{data.title}</h2>
           <div className="flex gap-4">
             <h4 className="text-sm font-bold">
-              from: {moment.unix(data.duration?.[0]!).format("DD-MM") ?? "-"}
+              from:{" "}
+              {data.duration?.length === 2
+                ? moment.unix(data.duration?.[0]).format("DD-MM")
+                : "---"}
             </h4>
             <h4 className="text-sm font-bold">
-              To: {moment.unix(data.duration?.[1]!).format("DD-MM") ?? "-"}
+              To:{" "}
+              {data.duration?.length === 2
+                ? moment.unix(data.duration?.[1]).format("DD-MM")
+                : "---"}
             </h4>
           </div>
           <h4 className="text-sm font-bold italic text-left">

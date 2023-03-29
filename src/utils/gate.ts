@@ -1,3 +1,4 @@
+import { WalletNftValidationResponse } from "@whal3s/whal3s.js/build/types/types/types-internal";
 import axios from "axios";
 import { pass } from "../constants";
 
@@ -10,7 +11,7 @@ const options = {
 
 export async function validateWithWhal3s(address?: string) {
   return await axios
-    .get(
+    .get<WalletNftValidationResponse>(
       `https://app.whal3s.xyz/api/v0/nft-validation-utilities/${pass.nftValidationKey}/wallet/${address}`,
       options
     )

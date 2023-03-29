@@ -110,7 +110,7 @@ const TaskForm = ({ type, id, data, onUpdate }: ITaskFormProps) => {
         status: "TODO",
         title: data.title,
         description: data.description,
-        duration: startDate && stopDate ? [startDate, stopDate] : undefined,
+        duration: startDate && stopDate ? [startDate, stopDate] : [],
         assignee: data.assignee,
         PR: data.PR,
         priority: data.priority,
