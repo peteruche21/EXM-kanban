@@ -58,9 +58,9 @@ cp .env.example .env
 Setup up the NFT pass contract.
 We will be using **goerli** because whal3s NFT validation surpports just a few chains for now.
 Ensure that you have your **private key**, **goerli rpc** and **etherscan api key** in your environment variables.
-Follow this [guide]("https://book.getfoundry.sh/getting-started/installation") if you don't have foundry installed.
+Follow this [guide](https://book.getfoundry.sh/getting-started/installation) if you don't have foundry installed.
 
-You can obtain a free _RPC NODE URL_ from [quicknode]("https://www.quicknode.com/")
+You can obtain a free _RPC NODE URL_ from [quicknode](https://www.quicknode.com/)
 
 ```sh
 yarn forge:clean
@@ -78,7 +78,7 @@ yarn forge:deploy chain=goerli
 
 - step 4
 
-Get your **whal3s** API KEY and set up your NFT Validation Utility by following this guides in the [docs]("https://docs.whal3s.xyz/")
+Get your **whal3s** API KEY and set up your NFT Validation Utility by following this guides in the [docs](https://docs.whal3s.xyz/)
 
 - step 5
 
@@ -91,10 +91,10 @@ Add your constants. [here](./src/constants/index.ts)
 
 - step 6
 
-The application uses [polybase]("https://polybase.xyz") by default, but you can configure it yourself to use [execution machine]("https://exm.dev")
+The application uses [polybase](https://polybase.xyz) by default, but you can configure it yourself to use [execution machine](https://exm.dev)
 by deploying the `EXM functions`.
 
-Create an account on [exm website]("https://exm.dev") and get an **api token/key** make sure you have [EXM cli]("https://docs.exm.dev/cli/introduction") installed.
+Create an account on [exm website](https://exm.dev) and get an **api token/key** make sure you have [EXM cli](https://docs.exm.dev/cli/introduction) installed.
 
 ```sh
 exm function:deploy --src src/exm/function.js --init-state '{ "tasks": [], "archive": [], "projects": [] }' --token <your exm api token/key here>
