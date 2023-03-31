@@ -13,6 +13,8 @@
 
 </div>
 
+[click here to learn how to build it yourself](https://mirror.xyz/anyaogu.eth/Pf__G5CTqExqXYpbrjQcUfr6mMiJaDf1GCGMAn7TWro)
+
 ## Contracts
 
 All NFT pass contracts are available in most evm chains at this address
@@ -33,7 +35,7 @@ If its not able to mint one for you (probably out of gas), transfer **goerliEth*
 ## Usage
 
 > This is a self hosted application.
-you have to host it yourself, or try the [demo](third-board.vercel.app).
+> you have to host it yourself, or try the [demo](third-board.vercel.app).
 
 - step 1
 

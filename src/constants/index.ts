@@ -15,7 +15,7 @@ export const pass = {
   privKey: import.meta.env.VITE_PRIVATE_KEY,
 
   // whal3s contants
-  nftValidationKey: "e255a559-d9e9-4683-8a62-5d85e763212d",
+  nftValidationKey: "44a78f60-2e25-40e2-9aa8-d26fe2a18bc6",
   whal3sApiKey: import.meta.env.WHAL3S_API_KEY,
 
   // web3onboard id

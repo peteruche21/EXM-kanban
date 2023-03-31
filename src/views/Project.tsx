@@ -7,7 +7,6 @@ import Empty from "../components/Flow/Empty";
 import Loading from "../components/Flow/Loading";
 import { TaskForm } from "../components/Form/Forms";
 import Modal from "../components/Modal";
-import { ITask } from "../types";
 //@ts-ignore
 import { Draggable, Droppable } from "react-drag-and-drop";
 import db from "../db/polybase/sdk";
@@ -23,7 +22,7 @@ const Project = ({ id }: { id: string }) => {
     isSuccess,
   } = useQuery({
     queryKey: ["tasks"],
-    queryFn: async () => await db.get(),
+    queryFn: async () => await db.get(id),
     retry: 5,
   });
 
@@ -58,21 +57,16 @@ const Project = ({ id }: { id: string }) => {
   };
 
   const filterTasks = (status: string) => {
-    return data?.data.reduce((acc, task) => {
-      if (task.data.status === status && task.data.projectId === id) {
-        acc.push(task.data);
-      }
-      return acc;
-    }, [] as ITask[]);
+    return data?.data.filter((task) => task.data.status === status);
   };
 
   const renderToDoTasks = (): JSX.Element[] | undefined => {
     return filterTasks("TODO")?.map((task, index) => {
       return (
-        <Draggable type="dnd" data={task.id} key={index}>
+        <Draggable type="dnd" data={task.data.id} key={index}>
           <TaskCard
-            data={task}
-            id={task.id}
+            data={task.data}
+            id={task.data.id}
             open={project?.data.open}
             callback={refresh}
           />
@@ -84,10 +78,10 @@ const Project = ({ id }: { id: string }) => {
   const renderDoingTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DOING")?.map((task, index) => {
       return (
-        <Draggable type="dnd" data={task.id} key={index}>
+        <Draggable type="dnd" data={task.data.id} key={index}>
           <TaskCard
-            data={task}
-            id={task.id}
+            data={task.data}
+            id={task.data.id}
             open={project?.data.open}
             callback={refresh}
           />
@@ -99,10 +93,10 @@ const Project = ({ id }: { id: string }) => {
   const renderDoneTasks = (): JSX.Element[] | undefined => {
     return filterTasks("DONE")?.map((task, index) => {
       return (
-        <Draggable type="dnd" data={task.id} key={index}>
+        <Draggable type="dnd" data={task.data.id} key={index}>
           <TaskCard
-            data={task}
-            id={task.id}
+            data={task.data}
+            id={task.data.id}
             open={project?.data.open}
             callback={refresh}
           />

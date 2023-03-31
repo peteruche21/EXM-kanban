@@ -5,12 +5,9 @@ import { IProject, ITask, ITaskFormProps } from "../../types";
 import ActionButton from "../Button/ActionButton";
 import Loading from "../Flow/Loading";
 import { useState } from "react";
-//@ts-ignore
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import db from "../../db/polybase/sdk";
 import { generateId } from "../../utils/generateId";
-import moment from "moment";
 import DateButton from "../Date";
 
 const ProjectForm = ({ callback }: { callback: () => void }) => {

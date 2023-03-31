@@ -6,9 +6,7 @@ import { pass } from "../../constants";
 import { IProject, ITask } from "../../types";
 import schema from "./schema";
 
-export const ethWallet = Wallet.fromPrivateKey(
-  toBuffer(pass.privKey)
-);
+export const ethWallet = Wallet.fromPrivateKey(toBuffer(pass.privKey));
 
 export class DbStore {
   private static instance: DbStore;
@@ -25,7 +23,7 @@ export class DbStore {
       };
     });
     // can be run only once
-    this.init()
+    this.init();
   }
 
   static getOrCreateDbStore(): DbStore {
@@ -64,8 +62,11 @@ export class DbStore {
   }
 
   // working
-  async get() {
-    return await this.db.collection<ITask>("Tasks").get();
+  async get(projectId: string) {
+    return await this.db
+      .collection<ITask>("Tasks")
+      .where("projectId", "==", projectId)
+      .get();
   }
 
   // working

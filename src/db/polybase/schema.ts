@@ -73,7 +73,8 @@ collection Tasks {
         }
       selfdestruct();
     }
-
+    
+    @index(projectId);
   }
 
   @public
