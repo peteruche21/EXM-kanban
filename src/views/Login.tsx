@@ -25,7 +25,10 @@ const Login = () => {
             <h2 className="font-medium text-sm my-3 mt-8 text-accent max-w-md">
               Unfortunately, you can not access this application, because you do
               not own a pass NFT required to access this space. if it's an
-              error, please contact your project manager.
+              error, please contact your project manager.{" "}
+              <a href={`/${wallet.accounts[0].address}`} className="link">
+                or mint from here
+              </a>
             </h2>
           )
         ) : (

@@ -47,7 +47,7 @@ const Mint = ({ address }: { address: string }) => {
   return (
     <div className="card w-96 text-neutral-content m-auto border">
       <div className="card-body items-center text-center">
-        <h2 className="card-title">You Discovered the Secret Mint Shop!</h2>
+        <h2 className="card-title">You Discovered the Admin Mint Shop!</h2>
         <p>
           for the purpose of this demo, if the mint fails, then there was not
           enough gas to handle the transaction.
