@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ethers, Wallet } from "ethers";
 import Alert from "../components/Alert";
 import Loading from "../components/Flow/Loading";
 import { pass } from "../constants";
+import contract from "../utils/contractHelper";
 import { validateWithWhal3s } from "../utils/gate";
 
 const Mint = ({ address }: { address: string }) => {
@@ -11,22 +11,11 @@ const Mint = ({ address }: { address: string }) => {
   // for the demo of this application the admin private key is used
   // and anyone is allowed to mint.
 
-  const provider = new ethers.providers.JsonRpcProvider(
-    import.meta.env.VITE_GOERLI_RPC_URL
-  );
-
   const { isError, data, refetch, isSuccess, isLoading } = useQuery({
     queryKey: ["secrete-place"],
     queryFn: async () => await validateWithWhal3s(address),
     retry: 5,
   });
-
-  const contract = new ethers.Contract(
-    pass.contractAddress,
-    pass.contractAbi,
-    // replace with window.ethereum or wallet onboard provider
-    new Wallet(pass.privKey).connect(provider)
-  );
 
   const mutation = useMutation({
     mutationFn: async (action: "mint" | "burn") => {

@@ -1,10 +1,26 @@
 import ConnectButton from "../components/Button/ConnectButton";
 import { useConnectWallet } from "@web3-onboard/react";
 import { useDappStore } from "../store";
+import { useMutation } from "@tanstack/react-query";
+import { pass } from "../constants";
+import contract from "../utils/contractHelper";
+import Loading from "../components/Flow/Loading";
 
 const Login = () => {
   const [{ wallet }] = useConnectWallet();
   const valid = useDappStore((state) => state.valid);
+
+  const mutation = useMutation({
+    mutationFn: async (address: string) => {
+      try {
+        const tx = await contract.safeMint(address, pass.tokenUri);
+        await tx.wait();
+      } catch (error) {
+        console.log("mint failed. probably out of gas");
+        return;
+      }
+    },
+  });
   return (
     <div className="flex flex-col justify-around px-4 h-[90vh] pt-[15vh] pb-[35vh]">
       <div className="m-auto">
@@ -26,9 +42,22 @@ const Login = () => {
               Unfortunately, you can not access this application, because you do
               not own a pass NFT required to access this space. if it's an
               error, please contact your project manager.{" "}
-              <a href={`/${wallet.accounts[0].address}`} className="link">
-                or mint from here
-              </a>
+              {/* to be removed start */}
+              <button
+                className="btn btn-link lowercase"
+                onClick={() =>
+                  mutation.mutateAsync(wallet?.accounts[0].address)
+                }
+              >
+                {mutation.isLoading ? (
+                  <Loading />
+                ) : mutation.isSuccess ? (
+                  "minted! reload page"
+                ) : (
+                  "or mint from here"
+                )}
+              </button>
+              {/* to be removed end */}
             </h2>
           )
         ) : (
