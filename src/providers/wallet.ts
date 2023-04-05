@@ -12,6 +12,7 @@ import sequenceModule from "@web3-onboard/sequence";
 import mewWalletModule from "@web3-onboard/mew-wallet";
 import uauthModule from "@web3-onboard/uauth";
 import enrkypt from "@web3-onboard/enkrypt";
+import transactionPreviewModule from '@web3-onboard/transaction-preview'
 
 import { chains } from "./chains";
 import { pass } from "../constants";
@@ -36,6 +37,7 @@ const sequence = sequenceModule();
 const enrkyptModule = enrkypt();
 const uauth = uauthModule(uauthOptions);
 const mewWallet = mewWalletModule();
+const transactionPreview = transactionPreviewModule({});
 
 const wallets = [
   injected,
@@ -51,6 +53,7 @@ const wallets = [
 ];
 
 const options = {
+  transactionPreview,
   connect: {
     autoConnectLastWallet: true,
     showSidebar: false,

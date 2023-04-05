@@ -1,22 +1,22 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useConnectWallet } from "@web3-onboard/react";
 import { ethers, Wallet } from "ethers";
 import Alert from "../components/Alert";
 import Loading from "../components/Flow/Loading";
 import { pass } from "../constants";
 import { validateWithWhal3s } from "../utils/gate";
+import { useSetChain } from "@web3-onboard/react";
 
 const Mint = ({ address }: { address: string }) => {
-  // this is a secret mint page, you might want to restrict access to only particular address
-  // and use window.ethereum instead of private key to call the mint function
-  // for the demo of this application the admin private key is used
-  // and anyone is allowed to mint.
+  const [{ wallet }] = useConnectWallet();
+  const [{ connectedChain, settingChain }, setChain] = useSetChain();
 
-  const provider = new ethers.providers.JsonRpcProvider(
-    import.meta.env.VITE_GOERLI_RPC_URL
+  const provider = new ethers.providers.Web3Provider(
+    wallet?.provider || (window as any).ethereum
   );
 
   const { isError, data, refetch, isSuccess, isLoading } = useQuery({
-    queryKey: ["secrete-place"],
+    queryKey: ["secret-place"],
     queryFn: async () => await validateWithWhal3s(address),
     retry: 5,
   });
@@ -24,25 +24,31 @@ const Mint = ({ address }: { address: string }) => {
   const contract = new ethers.Contract(
     pass.contractAddress,
     pass.contractAbi,
-    // replace with window.ethereum or wallet onboard provider
-    new Wallet(pass.privKey).connect(provider)
+    provider.getSigner()
   );
 
   const mutation = useMutation({
     mutationFn: async (action: "mint" | "burn") => {
       try {
+        await switchChain();
         const tx =
           action === "mint"
             ? await contract.safeMint(address, pass.tokenUri)
             : await contract.burn(data?.nfts[0].attributes.id.tokenId);
         await tx.wait();
       } catch (error) {
-        console.log(action + " failed. probably out of gas");
+        console.log(action + " failed. probably out of gas", error);
         return;
       }
       await refetch();
     },
   });
+
+  const switchChain = async () => {
+    // set your nft pass deployed chain id here
+    if (connectedChain?.id !== "0x13881" && !settingChain)
+      await setChain({ chainId: "0x13881" });
+  };
 
   return (
     <div className="card w-96 text-neutral-content m-auto border">

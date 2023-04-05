@@ -28,9 +28,11 @@ excluding : _ `goerli` _ and _ `base testnet` _ which is deployed at `0xf609c8fe
 
 ## Demo
 
+mumbai demo contract address (free mint): `0xAB395C5a16C6317f35bC88fE5fE2456ef9e0e708`
+
 Paste your address in the url `https:://third-board.vercel.app/<your address here>`
 if you don't have a **Pass NFT** you will be able to mint one for yourself.
-If its not able to mint one for you (probably out of gas), transfer **goerliEth** to this address `0x6394f2E9660a2D718ca03F9316F0e89c82CF85BA` and try again.
+If its not able to mint one for you (probably out of gas), obtain **mumbai testnet eth** and try again.
 
 ## Usage
 
